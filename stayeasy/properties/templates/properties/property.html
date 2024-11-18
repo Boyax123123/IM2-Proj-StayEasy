@@ -1,0 +1,154 @@
+{% extends 'stayeasy/base.html' %}
+<!DOCTYPE html>
+
+{% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/property.css' %}">
+<div class="conMid">
+    <div id="conProperty">
+        <!-- Property Image -->
+        <div id="conImg" class="centered test" title="{{ property.name }} picture">
+            {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.name }}" title="{{ property.name }}">
+            {% else %}
+                <p>No image available</p>
+            {% endif %}
+        </div>
+
+        <!-- Property Details -->
+        <div id="conDesc" class="test card">
+            <h3>Details:</h3>
+            <p>{{ property.description }}</p>
+            <p>Location: {{ property.address }}</p>
+        </div>
+
+        <!-- Property Booking Card url 'bookingslist' -->
+        <div id="conDetail" class="card">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <div class="property-card">
+                    <!-- Property Header -->
+                    <div class="property-header">
+                        <h2 id="property-name">{{ property.name }}</h2>
+                        <div class="price">
+                            <span class="amount">₱ {{ property.price|floatformat:2 }}</span>
+                            <span class="per-night">/ night</span>
+                        </div>
+                        <div class="rating">
+                            <span class="star">★</span>
+                            <span class="rating-value">{{ property.rating }}</span>
+                        </div>
+                    </div>
+                    <button class="favorite-btn" aria-label="Add to favorites">♡</button>
+
+                    <!-- Host Info -->
+                    <div class="host-info">
+                        <div class="host-avatar" aria-label="Host">👤</div>
+                        <span class="host-name">{{ property.host.name }}</span>
+                    </div>
+
+                    <!-- Check-in/Check-out -->
+                    <div class="check-dates">
+                        <div class="check-box">
+                            <label for="check-in" class="check-label">CHECK-IN</label>
+                            <input type="date" id="check-in" name="checkin_date" class="check-input" min="{{ today|date:'Y-m-d' }}" required>
+                        </div>
+                        <div class="check-box">
+                            <label for="check-out" class="check-label">CHECK-OUT</label>
+                            <input type="date" id="check-out" name="checkout_date" class="check-input" min="{{ today|date:'Y-m-d' }}" required>
+                        </div>
+                    </div>
+
+                    <!-- Total Section -->
+                    <div class="total-section">
+                        <span class="total-label">Total:</span>
+                        <span class="total-amount">₱ 0.00</span>
+                    </div>
+
+                    <!-- Hidden Inputs for Customer and Property -->
+                    <input type="hidden" name="customer_id" value="{{ user.id }}">
+                    <input type="hidden" name="property_id" value="{{ property.id }}">
+                    <input type="hidden" name="total_cost" id="total-cost" value="0.00">
+
+                    <!-- Book Button -->
+                    <button class="book-btn" type="submit" disabled>Book</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Reviews Section -->
+        <div id="conReviews" class="test card">
+            <h3>Reviews</h3>
+            <!-- Placeholder for reviews -->
+            <p>No reviews yet</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkInInput = document.getElementById('check-in');
+        const checkOutInput = document.getElementById('check-out');
+        const totalAmountElement = document.querySelector('.total-amount');
+        const bookButton = document.querySelector('.book-btn');
+        const pricePerNight = parseFloat('{{ property.price }}');
+
+        // Format price for display
+        function formatPrice(amount) {
+            return '₱ ' + amount.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Calculate total price
+        function calculateTotal() {
+            const checkInDate = new Date(checkInInput.value);
+            const checkOutDate = new Date(checkOutInput.value);
+
+            if (checkInInput.value && checkOutInput.value && checkInDate <= checkOutDate) {
+                const diffTime = checkOutDate - checkInDate;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                const totalPrice = diffDays * pricePerNight;
+                totalAmountElement.textContent = formatPrice(totalPrice);
+
+                // Set the total cost to the hidden field
+                document.getElementById('total-cost').value = totalPrice.toFixed(2);
+
+                bookButton.disabled = false;
+            } else {
+                totalAmountElement.textContent = '₱ 0.00';
+                bookButton.disabled = true;
+            }
+        }
+
+        // Update check-out minimum date and calculate total
+        checkInInput.addEventListener('change', function () {
+            if (this.value) {
+                const nextDay = new Date(this.value);
+                nextDay.setDate(nextDay.getDate() + 1);
+                const nextDayStr = nextDay.toISOString().split('T')[0];
+                checkOutInput.min = nextDayStr;
+
+                if (checkOutInput.value && checkOutInput.value < nextDayStr) {
+                    checkOutInput.value = nextDayStr;
+                }
+            }
+            calculateTotal();
+        });
+
+        checkOutInput.addEventListener('change', calculateTotal);
+
+        // Favorite button toggle
+        const favoriteBtn = document.querySelector('.favorite-btn');
+        favoriteBtn.addEventListener('click', function () {
+            this.textContent = this.textContent === '♡' ? '♥' : '♡';
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% extends 'stayeasy/base.html' %}
+
+{% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
+
+{% block content %}
+    <div class="conMid">
+        <div id="create">
+            <link rel="stylesheet" href="{% static 'css/create_property.css' %}">
+
+            <form action="{% url 'properties:create_property' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Custom form field rendering without errors -->
+                {% for field in form %}
+                    <div class="form-field">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                {% endfor %}
+
+                <div id="image-preview" style="margin-top: 10px;">
+                    
+                </div>
+                
+                <button type="submit">Create Property</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript to preview the image -->
+    <script>
+        // Function to show image preview on file input change
+        document.querySelector('input[type="file"][name="image"]').addEventListener('change', function(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('image-preview');
+                output.innerHTML = '<img src="' + reader.result + '" alt="Image Preview" style="max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px;">';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    </script>
+{% endblock %}

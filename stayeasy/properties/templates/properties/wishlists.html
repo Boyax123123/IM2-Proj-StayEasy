@@ -1,0 +1,27 @@
+
+<html lang="en">
+<head>
+    <title>Wishlist</title>
+    <style>
+        tr,th{
+            width: 25%;
+        }
+    </style>
+</head>
+
+<table>
+<th>wishlist_id</th>
+<th>user id</th>
+<th>email</th>
+<th>property</th>
+
+{% for wishlist in wishlists %}
+<tr>
+    <td>{{wishlist.id}}</td>
+    <td>{{wishlist.account.id}}</td>
+    <td>{{wishlist.account.email}}</td>
+    <td>{{wishlist.property.name}}</td>
+</tr>
+
+{%endfor%}
+</table>

@@ -1,0 +1,47 @@
+<h1>Properties Listing</h1>
+
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/listing.css'%}">
+
+<div class="container">
+    {% for property in properties %}
+        <!-- Make the image and details clickable -->
+        <a href="{% url 'properties:property_details' property.id %}">
+            <div class="conCard">
+                <div class="conImg">
+                    {% if property.image %}
+                        <img src="{{ property.image.url }}" alt="{{ property.name }}" width="200">
+                    {% else %}
+                        No image available
+                    {% endif %}
+                </div>
+                <div class="conPropertyDetails">
+                    <h2 class="textName">{{ property.name }}</h2>
+                    <h2 class="textPrice">₱{{ property.price }}</h2>
+                    <h2 class="textRating">⭐ {{ property.rating }}</h2>
+                    <!-- i want to add a heart here -->
+                     <div class="conHostOptions">
+                        <button type = "submit" value="{{property.id}}">Edit</button>
+                        <button type = "submit" value="{{property.id}}">Delete</button>
+                     </div>
+                </div>
+            </div>
+        </a>
+
+        <!-- Form to delete property (host specific) -->
+        {% if property.host == user %}
+            <form action="{% url 'properties:delete_property' property.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Delete Property</button>
+            </form>
+
+            <!-- Add to wishlist form -->
+            <form action="{% url 'properties:add_wishlist' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" name="property_id" value="{{ property.id }}">+♡</button>
+            </form>
+            <hr>
+        {% endif %}
+    {% endfor %}
+</div>

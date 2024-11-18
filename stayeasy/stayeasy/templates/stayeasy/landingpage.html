@@ -1,0 +1,49 @@
+{% extends 'stayeasy/base.html'%}
+{% load static %}
+{% block content %}
+<h1>Home page</h1>
+
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.username }}!</p>
+
+    <!-- Logout Form -->
+    <form action="{% url 'accounts:logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+    {% if user.role == 'host' or user.is_superuser%}
+        <p>Seller: {{ user.username }}!</p>
+
+        <!-- Add Property Button for Hosts -->
+        <form action="{% url 'properties:create_property' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Add Property</button>
+        </form>
+    {% endif %}
+
+{% else %}
+    <!-- Login Button (Displayed to non-authenticated users) -->
+    <form action="{% url 'accounts:login' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Login</button>
+    </form>
+  
+    <!-- Signup Button (Displayed to non-authenticated users) -->
+    <form action="{% url 'accounts:signup' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Signup</button>
+    </form>
+{% endif %}
+
+
+<form action="{% url 'properties:listing'%}"method="get">
+    {% csrf_token %}
+    <button type = "submit">Property Listings</button>
+</form> 
+
+<a href="{% url 'properties:listing' %}"><button type="button">Property Listings</button></a>
+<a href = "{% url 'properties:wishlists' %}"><button type = 'button'>Wishlist</button></a>
+
+<p>Test good</p>
+{% endblock %}

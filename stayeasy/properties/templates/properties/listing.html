@@ -1,0 +1,49 @@
+{% extends 'stayeasy/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/listing.css' %}">
+<div class="conMid">
+    <div class="container">
+        {% for property in properties %}
+            <!-- Make the image and details clickable -->
+            <a href="{% url 'properties:property_details' property.id %}">
+                <div class="conCard">
+                    <div class="conImg" alt="{{ property.name }} " title="{{ property.name }}">
+                        {% if property.image %}
+                            <img src="{{ property.image.url }}" alt="{{ property.name }} " title="{{ property.name }}">
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    </div>
+                    <div class="conPropertyDetails">
+                        <h2 class="textName">{{ property.name }}</h2>
+                        <h2 class="textPrice">₱{{ property.price }}</h2>
+                        <h2 class="textRating">⭐ {{ property.rating }}</h2>
+                        <!-- Optional: Add a heart icon or action button here -->
+                        <div class="conHostOptions">
+                            <button type="submit" value="{{ property.id }}">Edit</button>
+                            <button type="submit" value="{{ property.id }}">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Form to delete property (host specific) -->
+            {% if property.host == user %}
+                <form action="{% url 'properties:delete_property' property.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit">Delete Property</button>
+                </form>
+
+                <!-- Add to wishlist form -->
+                <form action="{% url 'properties:add_wishlist' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="property_id" value="{{ property.id }}">+♡</button>
+                </form>
+                <hr>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

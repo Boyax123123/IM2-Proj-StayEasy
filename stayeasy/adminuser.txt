@@ -1,0 +1,19 @@
+Accounts for testing: 
+admin: 
+imadmin@gmail.com
+123123
+
+josemaradmin
+123123
+
+
+host1@gmail.com
+123123
+
+
+user: 
+user2@gmail.com
+
+
+color schem
+https://www.schemecolor.com/webdesign-green-theme.php

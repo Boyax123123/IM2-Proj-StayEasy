@@ -1,0 +1,202 @@
+/* Reset padding and margins on body and html */
+a, a:visited, a:active, a:hover {
+    color: inherit !important;        /* Ensures link color is inherited */
+    text-decoration: none !important;  /* Removes the underline */
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;  /* Ensure the body and html take the full height */
+    width: 100%;
+    overflow-x: auto;  /* Allow horizontal scrolling if needed */
+    box-sizing: border-box;  /* Include padding and border in element's total width/height */
+    background-color: #f8fff8;
+}
+
+/* Ensure all elements respect box sizing */
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+/* Body should behave as a flex container to push footer to bottom */
+body {
+    display: flex;
+    flex-direction: column;  /* Stack content vertically */
+    min-height: 100vh;  /* Ensure the body takes at least the full height of the viewport */
+    height: auto;  /* Adjust based on content */
+}
+
+/* Header */
+header {
+    background: white;
+    border-bottom: 3px solid rgb(174, 252, 164);
+    padding: 15px;
+    height: 100px;  /* Fixed height for the header */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-left: 40px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box; /* Ensure padding/border is within the width */
+}
+
+/* Left part */
+#conLeft {
+    height: 100%;
+    width: 25%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    box-sizing: border-box; /* Prevent overflow */
+}
+
+#imgLogo {
+    height: 100%;
+    width: 100%;
+}
+
+/* Title */
+#conTitle {
+    height: 100%;
+    width: auto;
+    font-size: 50px;
+    padding-left: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #4CAF50;
+}
+
+/* Middle part */
+#conMid {
+    height: 100%;
+    width: 50%;
+    border: 3px solid blue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    box-sizing: border-box; /* Prevent overflow */
+}
+
+/* Right part */
+#conRight {
+    height: 100%;
+    width: 25%;
+    border: 3px solid rgb(255, 0, 230);
+    box-sizing: border-box; /* Prevent overflow */
+}
+
+/* Drop-related */
+.imgDrop {
+    height: 40px;
+    width: auto;
+}
+
+.drop {
+    border: 4px solid green;
+    height: 65px;
+    width: 100px;
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+}
+
+/* Products section */
+#conProds {
+    height: 920px;
+    border: 2px solid orange;
+    width: 65%;
+    display: grid;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 20px;
+    box-sizing: border-box; /* Prevent overflow */
+}
+
+.prods {
+    height: 200px;
+    aspect-ratio: 1 / 1;
+    background-color: yellow;
+    border: 2px solid;
+    font-size: 50px;
+}
+
+/* List style */
+ul {
+    list-style: none;
+    position: relative;
+}
+
+/* Footer */
+footer {
+    border-top: 3px solid rgb(58, 75, 56);
+    padding: 15px;
+    height: 100px; /* Fixed height for the footer */
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    padding-left: 40px;
+    width: 100%;
+    z-index: 1000;
+    box-sizing: border-box; /* Prevent overflow */
+    border: 1px solid green;
+    background: #b8dcd0;
+    margin-top: auto; /* Push the footer to the bottom if content is small */
+}
+
+/* Ensure body and html elements do not overflow */
+body {
+    margin-bottom: 100px; /* Space for the footer */
+}
+
+/* Content Section */
+.conMain {
+    flex-grow: 1;  /* This will make .conMain take up the remaining space */
+    margin-top: 80px;  /* Offset for the fixed header */
+    box-sizing: border-box;  /* Ensure no overflow due to padding */
+    border: 1px solid red;  /* Debugging border */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Make sure content doesn't overflow */
+.conMain > * {
+    margin-bottom: 20px;
+}
+
+/* Main content area with fixed header and footer */
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;  /* Add spacing between elements */
+    flex-grow: 1;  /* Allow main content to take available space */
+}
+
+.conMid {
+    background-color: #ecfce8;
+    width: 100%;                   /* Takes up 100% of the parent width */
+    padding: 5px;                 /* Add padding to give some space around content */
+    box-sizing: border-box; 
+    min-height: 450px;       /* Ensure padding doesn't affect width */
+    height: auto;                  /* Height should adjust based on content */
+    max-width: 80%;     
+    margin: 30px;                  /* Optional: Add space around the element */
+    text-align: center;   
+    border-radius: 25px;           /* Rounded corners */
+    /* Border Blur Effect */
+    border: 1px solid transparent;   /* Hide the solid border */
+    box-shadow: 0 0 15px rgba(211, 251, 211, 0.162);  /* Add a soft green blur effect */
+   
+}
+
+

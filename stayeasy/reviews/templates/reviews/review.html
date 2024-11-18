@@ -1,0 +1,24 @@
+<!-- reviews/review.html -->
+{% extends 'stayeasy/base.html' %}
+
+
+{% block body %}
+    <h1>This is the Reviews page</h1>
+
+    <!-- Button to redirect to Add Review page -->
+    <a href="{% url 'reviews:add' property_id=property.id %}" class="button-link">
+        <button class="add-review-button">Add Review</button>
+    </a>
+
+    <!-- Reviews Section -->
+    <ul>
+        {% for review in reviews %}
+            <li>
+                <strong>{{ review.title }}</strong>
+                <p>{{ review.content }}</p>
+            </li>
+        {% empty %}
+            <li>No reviews available.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

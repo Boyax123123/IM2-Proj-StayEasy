@@ -1,0 +1,44 @@
+{% extends 'stayeasy/base.html' %}
+{% load static %}
+
+{% block title %}
+    Write Review
+{% endblock %}
+{% block body %}
+
+<div class="conMid">
+    <link rel="stylesheet" href="{% static 'css/review_form.css' %}">
+
+    <div class="container review-container">
+        <h2>Write Review</h2>
+        <div class="review-card">
+            <h3>Property Name: {{ property.name }}</h3>
+            <form action="reviews:add_review" method="post">
+                {% csrf_token %}
+                
+                <div class="rating-section">
+                    <label for="id_rating" class="rating-label">⭐</label>
+                    {{ form.rating }}
+                </div>
+                
+                <div class="comment-section">
+                    {{ form.comment }}
+                </div>
+                
+                <!-- Test Fields for Manual Input of User and Property IDs -->
+                <!-- These fields are only for testing and will be removed later -->
+                <div class="test-section">
+                    <label for="user_id">User ID:</label>
+                    <input type="text" id="user_id" name="user_id" placeholder="user id">
+                    
+                    <label for="property_id">Property ID:</label>
+                    <input type="text" id="property_id" name="property_id" placeholder="property id">
+                </div>
+                
+                <button type="submit" class="submit-button">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

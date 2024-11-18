@@ -1,0 +1,78 @@
+/* General form styling */
+form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9fafb;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+form .form-field {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+form .form-field label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+form .form-field input,
+form .form-field textarea,
+form .form-field select {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+}
+
+form .form-field input:focus,
+form .form-field textarea:focus,
+form .form-field select:focus {
+    border-color: #4b8bbd;
+    box-shadow: 0 0 5px rgba(75, 139, 189, 0.5);
+}
+
+form button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 1.125rem;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Error messages */
+form .form-field .error {
+    color: #ff0000;
+    font-size: 0.875rem;
+    margin-top: 5px;
+}
+
+/* Styles for the image preview */
+
+#image-preview{
+    height: 200px;
+    width: 200px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+}
+img{
+    height: 200px;
+    width: 200px;
+    box-sizing: border-box;
+    justify-self: center;
+    align-items: flex-end;
+}
