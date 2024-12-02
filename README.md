@@ -16,8 +16,6 @@
 - [Usage](#usage)
 - [Features](#features)
 - [Contributors](#contributors)
-- [License](#license)
-- [Contact](#contact)
 - [Acknowledgments](#acknowledgments)
 
 ---
@@ -117,14 +115,96 @@ Before you start, ensure you have the following installed on your system:
   Guests can leave reviews, and hosts can maintain their reputation.
 
 ---
-## Contributors
+## 👥 Contributors
 
 Thanks to these amazing collaborators for their contributions to the project:
 
-| ![Contributor1](https://via.placeholder.com/100) | ![Contributor2](https://via.placeholder.com/100) | ![Contributor3](https://via.placeholder.com/100) |
-|:------------------------------------------------:|:------------------------------------------------:|:------------------------------------------------:|
-| [Contributor 1](https://github.com/contributor1) | [Contributor 2](https://github.com/contributor2) | [Contributor 3](https://github.com/contributor3) |
+<div style="display: flex; flex-direction: column; align-items: center; gap: 30px; margin-top: 20px;">
 
+<div style="text-align: center; margin-bottom: 20px;">
+  <a href="https://github.com/Boyax123123">
+    <img src="https://github.com/Boyax123123.png?size=100" width="80" height="80" style="border-radius: 50%;" alt="Boyax123123" />
+  </a>
+  <br />
+  <a href="https://github.com/Boyax123123" style="text-decoration: none; color: black;">
+    <strong>Boyax123123</strong>
+  </a>
+</div>
 
+<div style="text-align: center; margin-bottom: 20px;">
+  <a href="https://github.com/darkn38">
+    <img src="https://github.com/darkn38.png?size=100" width="80" height="80" style="border-radius: 50%;" alt="darkn38" />
+  </a>
+  <br />
+  <a href="https://github.com/darkn38" style="text-decoration: none; color: black;">
+    <strong>darkn38</strong>
+  </a>
+</div>
+
+<div style="text-align: center; margin-bottom: 20px;">
+  <a href="https://github.com/Contributor3">
+    <img src="https://via.placeholder.com/100" width="80" height="80" style="border-radius: 50%;" alt="Contributor 3" />
+  </a>
+  <br />
+  <a href="https://github.com/Contributor3" style="text-decoration: none; color: black;">
+    <strong>Contributor 3</strong>
+  </a>
+</div>
+
+</div>
+
+---
+
+## 🙌 Acknowledgments
+
+We would like to thank the following resources and individuals for their inspiration, guidance, and contributions to this project:
+
+---
+
+### ![Airbnb](https://img.shields.io/badge/Airbnb-FF5A5F?style=for-the-badge&logo=airbnb&logoColor=white)  
+For inspiring the concept and features of StayEasy.  
+**[Visit Airbnb](https://www.airbnb.com)**
+
+---
+
+### ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)  
+For providing responsive and mobile-first design elements.  
+**[Visit Bootstrap](https://getbootstrap.com)**
+
+---
+
+### ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)  
+For their detailed framework guides and community support.  
+**[Visit Django Documentation](https://docs.djangoproject.com)**
+
+---
+
+### ![Unsplash](https://img.shields.io/badge/Unsplash-000000?style=for-the-badge&logo=unsplash&logoColor=white)  
+For free, high-quality images used in our project.  
+**[Visit Unsplash](https://unsplash.com)**
+
+---
+
+### ![Shields.io](https://img.shields.io/badge/Shields.io-555555?style=for-the-badge&logo=shieldsdotio&logoColor=white)  
+For creating beautiful and customizable badges for this README.  
+**[Visit Shields.io](https://shields.io)**
+
+---
+
+### ![All Contributors](https://img.shields.io/badge/All%20Contributors-FE7D37?style=for-the-badge&logo=allcontributors&logoColor=white)  
+For making it easy to recognize project collaborators.  
+**[Visit All Contributors](https://allcontributors.org/)**
+
+---
+
+### Our Amazing Team Members:
+- [Boyax123123](https://github.com/Boyax123123)  
+- [darkn38](https://github.com/darkn38)  
+- [Contributor 3](https://github.com/Contributor3)
+
+---
+
+Your support and resources helped make StayEasy a success. 🙏
 
 [Back to top](#stayeasy)
+
