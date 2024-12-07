@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import landingpage
+from .views import landingpage, restricted
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import set_test_date
 
 app_name = 'stayeasy'
 
@@ -26,8 +27,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include("accounts.urls")),
     path('', landingpage, name='landingpage'),
+    path('restricted', restricted, name = "restricted"),
     path('property/', include('properties.urls')),
-    path('reviews/', include('reviews.urls'))
+    path('reviews/', include('reviews.urls')),
+    path('bookings/', include('bookings.urls')),
+    path('set_test_date/', set_test_date, name='set_test_date'),  
+
+
 ]
 if settings.DEBUG:  # Only add this when in development
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

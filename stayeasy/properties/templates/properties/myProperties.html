@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+{% extends 'stayeasy/base.html' %}
+
+{% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/listing.css' %}">
+<head>
+    <style>
+        table, th, td {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid;
+        }
+    </style>
+    <title>Property Listings</title>
+</head>
+<!-- ;alksdhf;asdfj -->
+<div class = "conMid">
+     
+    <form action="{% url 'properties:my_properties' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="sortAlpha">Alphabetical</button>
+        <button type="submit" name="sortPriceLower">Price by Lowest</button>
+        <button type="submit" name="sortPriceHigher">Price by Highest</button>
+        <button type="submit" name="sortRating">Rating</button>
+    </form>
+    <form action="{% url 'properties:create_property' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Add Property</button>
+    </form>
+    <div class="container">
+        {% for property in properties %}
+            <a href="{% url 'properties:property_details' property.id %}">
+                <div class="conCard">
+
+                    <form action="{% url 'properties:my_properties' %}" method="post">
+                        {% csrf_token %}
+                        <div class="conHostOptions">
+                            <button name= "deleteProperty" value = "{{ property.id }}">Delete</button>
+                            <!-- <button name = "editProperty" value="{{ property.id }}">Edit</button> -->
+                        </div>
+                    </form>
+                    <div class="conImg">
+                        {% if property.image %}
+                            <img src="{{ property.image.url }}" alt="{{ property.name }}" width="200">
+                        {% else %}
+                            No image available
+                        {% endif %}
+                    </div>
+                    <div class="conPropertyDetails">
+                        <h2 class="textName">{{ property.name }}</h2>
+                        <h2 class="textPrice">₱ {{ property.price }}</h2>
+                        <h2 class="textRating">⭐ {{ property.rating }}</h2>
+                        
+                        
+                    </div>
+                </div>
+            </a>
+       
+        {% endfor %}
+    </div>
+
+
+
+</div>
+{% endblock %}

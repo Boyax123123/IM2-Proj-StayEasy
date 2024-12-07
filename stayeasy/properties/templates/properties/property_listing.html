@@ -1,0 +1,40 @@
+{% extends 'stayeasy/base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/listing.css' %}">
+<div class="conMid">
+    <div class="container">
+        <!-- editan sorting -->
+        <form action="{% url 'properties:my_properties' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="sortAlpha">Alphabetical</button>
+            <button type="submit" name="sortPriceLower">Price by Lowest</button>
+            <button type="submit" name="sortPriceHigher">Price by Highest</button>
+            <button type="submit" name="sortRating">Rating</button>
+        </form>
+
+        {% for property in properties %}
+            <!-- Make the image and details clickable -->
+            <a href="{% url 'properties:property_details' property.id %}">
+                <div class="conCard">
+                    <div class="conImg" alt="{{ property.name }} " title="{{ property.name }}">
+                        {% if property.image %}
+                            <img src="{{ property.image.url }}" alt="{{ property.name }} " title="{{ property.name }}">
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    </div>
+                    <div class="conPropertyDetails">
+                        <h2 class="textName">{{ property.name }}</h2>
+                        <h2 class="textPrice">₱{{ property.price }}</h2>
+                        <h2 class="textRating">⭐ {{ property.rating }}</h2>
+                        <!-- Optional: Add a heart icon or action button here -->
+                        
+                    </div>
+                </div>
+            </a>       
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f3fcf3; /* Light green background */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Align content at the top */
+    height: auto; /* Allow dynamic height */
+    margin: 0;
+    padding: 40px 0; /* Add space above and below */
+}
+
+.conMain {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto; 
+    width: 100%; /* Ensure consistent layout */
+    padding: 70px;
+}
+
+.logBox {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 30px 40px;
+    width: 350px;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+h1.logtext {
+    font-size: 24px;
+    color: #67da6d; /* Dark green */
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    font-size: 14px;
+}
+
+input {
+    width: 94%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #81c784; /* Medium green */
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border-color: #388e3c; /* Darker green */
+    box-shadow: 0 0 5px rgba(56, 142, 60, 0.4);
+}
+
+.error {
+    color: #c62828; /* Red for error text */
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.submitBtn {
+    display: inline-block;
+    margin: 0 auto;
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    color: #ffffff;
+    background-color: #66bb6a; /* Green */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.submitBtn:hover {
+    background-color: #388e3c; /* Dark green */
+}
+
+.signupLink {
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.signupLink a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.signupLink a:hover {
+    text-decoration: underline;
+}

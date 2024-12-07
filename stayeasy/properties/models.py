@@ -27,6 +27,9 @@ class Property(models.Model):
 #     image = models.ImageField(upload_to='static/media/')
 
 class Wishlist(models.Model):
-    account = models.ForeignKey(Accounts, on_delete=models.CASCADE)
+    account = models.OneToOneField(Accounts, on_delete=models.CASCADE)
     property = models.ManyToManyField(Property)
     date_added = models.DateTimeField(auto_now_add=True)
+
+
+ 

@@ -1,0 +1,158 @@
+
+
+.container {
+    display: grid; /* Enable grid layout */
+    grid-template-columns: repeat(4, 1fr); /* 4 columns, each taking an equal fraction of space */
+    gap: 16px; /* Space between grid items */
+    padding: 16px; /* Optional padding around the grid */
+    /* border: 1px solid blue; */
+    justify-items: center; /* Centers the grid items horizontally */
+    align-items: center; /* Centers the grid items vertically */
+}
+
+.conCard {
+    border-radius: 15px;
+    height: 400px;
+    min-height: 400px;
+    min-width: 300px;
+    padding-bottom: 5px; /* Set width to 100% of the grid item */
+    width: 300px; /* Optional: Set a max-width for consistency */
+    overflow: hidden;
+    margin-bottom: 15px;
+    transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease; /* Smooth transition for hover effects */
+}
+
+.conCard:hover {
+    transform: scale(1.02); 
+    background: #D4E7C5; 
+    opacity: 0.9;
+}
+
+
+
+.conImg {
+    height: 75%; /* Adjust as needed */
+    width: 100%;
+    overflow: hidden; /* Ensures any overflow is hidden */
+    border-radius: 15px;
+    display: flex; /* Centers content in the container */
+    justify-content: center;
+    align-items: center;
+    background: #d7d7d7;
+}
+
+.conImg img {
+    width: 100%; /* Scale image to fit width */
+    height: 100%; /* Scale image to fit height */
+    object-fit: cover; /* Ensures the image maintains aspect ratio and fills the container */
+    border-radius: 15px; /* Optional: Apply the same border-radius as the container */
+}
+
+
+.conPropertyDetails {
+    font-family: sans-serif;
+    font-weight: bold;
+    /* border: 1px solid green; */
+    margin: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align the items to the left (start) of the container */
+    justify-content: flex-start; /* Align items at the top of the container */
+    padding: 5px; 
+    padding-left: 11px;
+    padding-right: 11px;
+}
+
+.details_top{
+    display:flex;
+
+
+}
+
+h2 {
+    margin: 1px 0; 
+    font-size: 15px; 
+}
+
+.textName {
+    padding-top: 3px;
+    font-size: 19px;
+    /* border: 1px solid red; */
+    width: 245px;
+    display: flex;
+}
+
+.textPrice {
+    font-size: 21px;
+    color: rgb(36, 66, 0)
+}
+
+.textRating{
+    font-size: 17px;
+    color: rgb(36, 66, 0);
+    margin-top: 3px;
+}
+.textName {
+    font-size: 18px;
+}
+
+form {
+    margin: 0; /* Remove default margin around forms */
+}
+
+button {
+    margin: 4px 0; /* Add consistent spacing between buttons */
+}
+
+/* Media query to make the grid responsive */
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: repeat(3, 1fr); /* 3 columns on medium-sized screens */
+    }
+}
+
+@media (max-width: 900px) {
+    .container {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        grid-template-columns: 1fr; /* 1 column on very small screens */
+    }
+}
+
+
+/* heart */
+.wish {
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+    cursor: pointer; /* Pointer cursor for button effect */
+    font-size: 25px; /* Adjust size for visibility */
+    color: inherit; /* Inherit the font color */
+    transition: all 0.2s ease; /* Smooth transition */
+}
+
+.wish:hover {
+    transform: scale(1.1); /* Slightly enlarge on hover */
+    color: red; /* Change color to red on hover */
+    opacity: 0.8; /* Slightly transparent */
+}
+
+.placeholder {
+    background-color: #f0f0f0;
+    color: #888;
+    text-align: center;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.placeholder p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+}

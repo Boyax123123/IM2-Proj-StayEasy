@@ -1,11 +1,17 @@
 from django.shortcuts import render, redirect
 from .forms import SignupForm
+from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_exempt
 from .models import Accounts
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 # @csrf_protect
+
+
+def profile(request):
+    return render(request, 'accounts/profile.html')
 
 def test(request):
     accounts = Accounts.objects.all()
@@ -14,7 +20,7 @@ def test(request):
 
 
 @csrf_exempt
-def signup(request):
+def signup_view(request):
     if request.method == "POST":
         if 'hostsignup' in request.POST:
             role = 'host'
@@ -31,8 +37,13 @@ def signup(request):
 
     return render(request, 'accounts/signup.html', {'form': form})
 # @csrf_protect
+
+
+
 @csrf_exempt
 def login_view(request):
+    if request.user.is_authenticated:
+        redirect('landingpage')
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
@@ -55,7 +66,33 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    # messages.success(request, "You have been logged out successfully.")  # Optional success message
+    messages.success(request, "You have been logged out successfully.")  # Optional success message
     return redirect('landingpage') 
 
+
+# wallet=====
+
+
+# wallet===========
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def deposit(request):
+    if request.method == "POST":
+        try:
+            amount = int(request.POST.get("amount"))
+            if amount > 0:
+                request.user.balance += amount
+                request.user.save()
+                return JsonResponse({
+                    "status": "success",
+                    "message": f"₱{amount} successfully added to your wallet!",
+                    "new_balance": request.user.balance
+                })
+            else:
+                return JsonResponse({"status": "error", "message": "Invalid amount entered."})
+        except ValueError:
+            return JsonResponse({"status": "error", "message": "Please enter a valid number."})
+    return JsonResponse({"status": "error", "message": "Invalid request method."})
 

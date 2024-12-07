@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+{% extends 'stayeasy/base.html' %}
+{% load static %}
+
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Bookings{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/my_bookings.css' %}">
+</head>
+
+<div class="conMid">
+    <!-- Tabs for Sorting -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="showTab('current')">Current Bookings</button>
+        <button class="tab-button" onclick="showTab('completed')">Completed</button>
+        <button class="tab-button" onclick="showTab('cancelled')">Cancelled</button>
+        <button class="tab-button" onclick="showTab('all')">All Bookings</button>
+    </div>
+
+    <!-- Current Bookings -->
+    <div id="current" class="tab-content active">
+        {% for booking in current_bookings %}
+        <div class="booking-card">
+            <div class="property-image">
+                {% if booking.property.image %}
+                <img src="{{ booking.property.image.url }}" alt="Property Image">
+                {% else %}
+                <div class="placeholder-image">No Image Available</div>
+                {% endif %}
+            </div>
+            <div class="property-name-address">
+                <h3>{{ booking.property.name }}</h3>
+                <p>{{ booking.property.address }}</p>
+            </div>
+            <div class="booking-info">
+                <p>{{ booking.checkin_date }} to {{ booking.checkout_date }}</p>
+                <p>₱ {{ booking.total_cost }}</p>
+            </div>
+            <div class="booking-status">
+                <p>Status: <span class="status-text">{{ booking.status|title }}</span></p>
+                {% if booking.status == 'pending' %}
+                    <button class="cancel-btn" onclick="openCancelModal({{ booking.id }})">Cancel</button>
+                {% elif booking.status == 'confirmed' and booking.checkin_date|date:"Y-m-d" > today|date:"Y-m-d" %}
+                    <button class="cancel-btn" onclick="openCancelModal({{ booking.id }})">Cancel</button>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Completed Bookings -->
+    <div id="completed" class="tab-content">
+        {% for booking in completed_bookings %}
+        <div class="booking-card">
+            <div class="property-image">
+                {% if booking.property.image %}
+                <img src="{{ booking.property.image.url }}" alt="Property Image">
+                {% else %}
+                <div class="placeholder-image">No Image Available</div>
+                {% endif %}
+            </div>
+            <div class="property-name-address">
+                <h3>{{ booking.property.name }}</h3>
+                <p>{{ booking.property.address }}</p>
+            </div>
+            <div class="booking-info">
+                <p>{{ booking.checkin_date }} to {{ booking.checkout_date }}</p>
+                <p>₱ {{ booking.total_cost }}</p>
+            </div>
+            <div class="booking-status">
+                {% if booking.id in reviewed_booking_ids %}
+                    <a href="{% url 'reviews:add_review' booking.property.id booking.id %}" class="review-button">See my review</a>
+                {% else %}
+                    <a href="{% url 'reviews:add_review' booking.property.id booking.id %}" class="review-button">Write a review</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Cancelled Bookings -->
+    <div id="cancelled" class="tab-content">
+        {% for booking in cancelled_bookings %}
+        <div class="booking-card">
+            <div class="property-image">
+                {% if booking.property.image %}
+                <img src="{{ booking.property.image.url }}" alt="Property Image">
+                {% else %}
+                <div class="placeholder-image">No Image Available</div>
+                {% endif %}
+            </div>
+            <div class="property-name-address">
+                <h3>{{ booking.property.name }}</h3>
+                <p>{{ booking.property.address }}</p>
+            </div>
+            <div class="booking-info">
+                <p>{{ booking.checkin_date }} to {{ booking.checkout_date }}</p>
+                <p>₱ {{ booking.total_cost }}</p>
+            </div>
+            <div class="booking-status">
+                <p>Cancelled</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- All Bookings -->
+    <div id="all" class="tab-content">
+        {% for booking in all_bookings %}
+        <div class="booking-card">
+            <div class="property-image">
+                {% if booking.property.image %}
+                <img src="{{ booking.property.image.url }}" alt="Property Image">
+                {% else %}
+                <div class="placeholder-image">No Image Available</div>
+                {% endif %}
+            </div>
+            <div class="property-name-address">
+                <h3>{{ booking.property.name }}</h3>
+                <p>{{ booking.property.address }}</p>
+            </div>
+            <div class="booking-info">
+                <p>{{ booking.checkin_date }} to {{ booking.checkout_date }}</p>
+                <p>₱ {{ booking.total_cost }}</p>
+            </div>
+            <div class="booking-status">
+                <p>Status: {{ booking.status|title }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+<dialog id="modalConfirmation" class="modal">
+    <div class="modal-content">
+        <h3>Cancel Booking?</h3>
+        <div class="modal-actions">
+            <button id="btnCancel" class="cancel">No</button>
+            <button id="btnConfirm" class="confirm">Yes, Cancel</button>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    let selectedBookingId = null;
+
+    function openCancelModal(bookingId) {
+        selectedBookingId = bookingId;
+        document.getElementById("modalConfirmation").showModal();
+    }
+
+    document.getElementById("btnCancel").addEventListener("click", function () {
+        document.getElementById("modalConfirmation").close();
+    });
+
+    document.getElementById("btnConfirm").addEventListener("click", function () {
+        fetch("{% url 'bookings:cancel_booking' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({ booking_id: selectedBookingId }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Booking has been canceled");
+                    location.reload();
+                } else {
+                    alert("Failed to cancel booking.");
+                }
+            })
+            .catch(error => alert("An error occurred."));
+        document.getElementById("modalConfirmation").close();
+    });
+
+    function showTab(tabId) {
+        const tabs = document.querySelectorAll(".tab-content");
+        tabs.forEach(tab => tab.classList.remove("active"));
+
+        const buttons = document.querySelectorAll(".tab-button");
+        buttons.forEach(button => button.classList.remove("active"));
+
+        document.getElementById(tabId).classList.add("active");
+        event.target.classList.add("active");
+    }
+</script>
+{% endblock %}

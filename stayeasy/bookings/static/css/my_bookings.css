@@ -1,0 +1,257 @@
+/* General Container */
+.conMid {
+    width: 80%;
+    margin: 0 auto;
+    background-color: #f8fff7; /* Light green background for the container */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+}
+
+.tab-button {
+    padding: 10px 15px;
+    border: none;
+    background-color: transparent;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.tab-button:hover,
+.tab-button.active {
+    color: #48c78e;
+    border-bottom: 2px solid #48c78e;
+    font-weight: bold;
+}
+
+/* Tab Content */
+    .tab-content {
+        display: none;
+    margin-top: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Booking Cards */
+.booking-card {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 1fr;
+    align-items: center;
+    background-color: #ffffff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.booking-card:hover {
+    transform: translateY(-3px);
+}
+
+/* Property Image */
+.property-image {
+    width: 170px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+
+}
+
+.property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Property Name and Address */
+.property-name-address {
+    display: flex;             /* Use flexbox */
+    flex-direction: column;    /* Stack items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    align-items: flex-start;   /* Align items to the left */ 
+    border-right: 2px solid rgb(242, 242, 242);
+    border-left: 2px solid rgb(242, 242, 242);  
+    height: 100%;  
+    width: 95%; 
+    padding-left: 5%;  /* Make sure it takes up full height of the screen */
+}
+
+
+.property-name-address h3 {
+    font-size: 1.2rem;
+    margin: 0 0 5px 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.property-name-address p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Booking Info */
+.booking-info {
+    display: flex;             /* Use flexbox */
+    flex-direction: column;    /* Stack items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    align-items: flex-start;   /* Align items to the left */ 
+    border-right: 2px solid rgb(242, 242, 242);   
+    height: 100%;  
+    width: 95%;
+}
+
+.booking-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Booking Status */
+.booking-status {
+    display: flex;             /* Use flexbox */
+    flex-direction: column;    /* Stack items vertically */
+    justify-content: flex-start; /* Align items to the top */
+    align-items: flex-start;   /* Align items to the left */ 
+    height: 100%;  
+    width: 95%;
+}
+
+.booking-status p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.status-text {
+    font-weight: bold;
+    color: #48c78e;
+}
+
+/* Review Button */
+.review-button {
+    padding: 8px 12px;
+    background-color: #48c78e;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    width: fit-content;
+}
+
+.review-button:hover {
+    background-color: #36a671;
+}
+
+/* Empty State (No Bookings) */
+.empty-state {
+    text-align: center;
+    font-size: 1rem;
+    color: #999;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Current Bookings Section */
+.current-bookings {
+    margin-bottom: 30px;
+}
+
+/* Media Query */
+@media (max-width: 768px) {
+    .booking-card {
+        grid-template-columns: 1fr 2fr 2fr;
+        grid-template-rows: 1fr 1fr;
+        row-gap: 10px;
+    }
+
+    .booking-status {
+        grid-column: 1 / -1;
+        align-items: flex-start;
+    }
+
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-button {
+        margin: 5px 0;
+    }
+}
+
+/* modal */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    width: 400px;
+    position: relative;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.cancel {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirm {
+    background-color: #d4edda;
+    color: #155724;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal h3 {
+    margin-bottom: 10px;
+    color: #333;
+}

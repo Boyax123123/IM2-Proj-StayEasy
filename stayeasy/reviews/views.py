@@ -1,42 +1,73 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from properties.models import Property
 from .models import Reviews
+from bookings.models import Bookings
 from .forms import ReviewForm
 from django.contrib.auth.decorators import login_required
-from accounts.models import Accounts
+from django.core.paginator import Paginator
 
-
-def add_review(request, property_id):
+@login_required
+def add_review(request, property_id, booking_id):
+    # Fetch the property and booking
     property = get_object_or_404(Property, id=property_id)
-    
-    # Initialize form for review
+    booking = get_object_or_404(Bookings, id=booking_id)
+
+    # Check if a review already exists for this booking
+    existing_review = Reviews.objects.filter(property=property, booking=booking, customer=request.user).first()
+
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        if existing_review:
+            # If a review exists, update it
+            form = ReviewForm(request.POST, instance=existing_review)
+        else:
+            # If no review exists, create a new one
+            form = ReviewForm(request.POST)
         
-        # Check if the form is valid
         if form.is_valid():
-            # Manually handle user and property id for testing if provided in form data
-            user_id = request.POST.get('user_id')  # Testing purposes
-            property_id = request.POST.get('property_id')  # Testing purposes
-            
-            # Create the review instance but don't save yet
             review = form.save(commit=False)
-            review.user = request.user if not user_id else Accounts.objects.get(id=user_id)
-            review.property = property if not property_id else Property.objects.get(id=property_id)
-            
-            # Save the review to the database
+            review.customer = request.user
+            review.property = property
+            review.booking = booking
             review.save()
-            return redirect('property:property_detail', property_id=property.id)
+            return redirect('properties:property_details', property_id=property.id)
     else:
-        form = ReviewForm()
+        if existing_review:
+            # Pre-fill the form with the existing review
+            form = ReviewForm(instance=existing_review)
+        else:
+            # Display an empty form for a new review
+            form = ReviewForm()
 
     context = {
         'property': property,
         'form': form,
+        'existing_review': existing_review,  # Pass this to check in the template
     }
     return render(request, 'reviews/add_review.html', context)
 
-def review_list(request):
-    # Your logic for fetching and displaying reviews
-    return render(request, 'reviews/review.html')
 
+
+
+def property_reviews(request, property_id):
+    # Get the property object
+    property = get_object_or_404(Property, id=property_id)
+
+    # Fetch all reviews for the property
+    reviews_list = Reviews.objects.filter(property=property).order_by('-review_date')
+
+    # Count the total number of reviews
+    reviews_count = reviews_list.count()
+
+    # Pagination: Show 5 reviews per page
+    paginator = Paginator(reviews_list, 5)
+    page_number = request.GET.get('page')
+    reviews = paginator.get_page(page_number)
+
+    # Pass data to the template
+    context = {
+        'property': property,
+        'reviews': reviews,
+        'reviews_count': reviews_count,  # Add the total reviews count
+    }
+
+    return render(request, 'reviews/property_reviews.html', context)

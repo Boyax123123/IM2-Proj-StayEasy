@@ -15,5 +15,9 @@ user:
 user2@gmail.com
 
 
+hosts:
+host3@g.com
+Pass.123123
+
 color schem
 https://www.schemecolor.com/webdesign-green-theme.php

@@ -3,12 +3,13 @@
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, auto); /* Changed to auto for better content adaptation */
     gap: 10px;
+    margin-top: 30px;
     min-height: 100vh; /* Ensures minimum full viewport height */
     padding: 15px;
 }
 
 .test {
-    /* border: 1px solid black; */
+    border: 1px solid black;
     margin: 2px;
     width: 100%;
     box-sizing: border-box; 
@@ -22,7 +23,7 @@
     background: #F4F3F2;
     position: relative;
     overflow: hidden;
-    height: 400px; /* Fixed height or use aspect-ratio */
+    height: 480px;
     box-shadow: 0 4px 10px rgba(118, 118, 118, 0.3);
 }
 
@@ -42,6 +43,7 @@
 #conDesc {
     grid-area: 4/1/5/4;
     padding: 20px;
+    height:230px;
 }
 
 #conDesc h3 {
@@ -57,6 +59,7 @@
     grid-area: 5/1/6/6;
     min-height: 130px; /* Changed to min-height for flexibility */
     padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 /* Utility class for centering content */
@@ -251,4 +254,381 @@
     background: white;
     border-radius: 0.75rem;
     box-shadow: 0 4px 10px rgba(118, 118, 118, 0.3);
+}
+
+
+#property-details {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#booking-section {
+    grid-column: 1 / -1;
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.date-inputs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#total-amount {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #ff5a1f;
+    margin-bottom: 20px;
+}
+
+#booking-status {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #ff0000;
+}
+
+
+.btnCancel {
+    background: #ffe5e5;
+    color: #f44336;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btnConfirm {
+    background: #e6ffe6;
+    color: #4caf50;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btnCancel:hover {
+    background: #ffd6d6;
+}
+
+.btnConfirm:hover {
+    background: #d5f5d5;
+}
+
+.placeholder {
+    background: #f0f0f0;
+    text-align: center;
+    padding: 50px;
+    color: #888;
+    border-radius: 10px;
+}
+
+
+/* modal booking 12/7 1.02 am */
+/* Modal CSS */
+.modalBooking {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    border: none;
+}
+
+.modalBooking-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+}
+
+.modalBooking-title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.modalBooking-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.modalBooking-info {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+.modalBooking-info p {
+    margin: 0;
+}
+
+.modalBooking-image {
+    flex: 1;
+    width: 120px;
+    height: 120px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.modalBooking-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.placeholder {
+    font-size: 0.9rem;
+    color: #888;
+    text-align: center;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+.modalBooking-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.modalBooking-total span:last-child {
+    color: #f57c00; /* Orange for total amount */
+}
+
+.modalBooking-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.btnCancel,
+.btnConfirm {
+    padding: 12px 25px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 45%;
+    text-align: center;
+}
+
+.btnCancel {
+    background: #ffe5e5;
+    color: #f44336;
+    transition: background 0.3s;
+}
+
+.btnCancel:hover {
+    background: #ffd6d6;
+}
+
+.btnConfirm {
+    background: #e6ffe6;
+    color: #4caf50;
+    transition: background 0.3s;
+}
+
+.btnConfirm:hover {
+    background: #d5f5d5;
+}
+
+@media (max-width: 768px) {
+    .modalBooking-content {
+        width: 95%;
+        max-width: 400px;
+        padding: 20px;
+    }
+
+    .modalBooking-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .modalBooking-title {
+        font-size: 1.5rem;
+    }
+
+    .modalBooking-info {
+        font-size: 0.9rem;
+    }
+
+    .modalBooking-total {
+        font-size: 1.2rem;
+    }
+
+    .btnCancel,
+    .btnConfirm {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
+
+
+.booking-status-message{
+    color: rgb(249, 28, 28);
+    margin-bottom: 15px;
+}
+
+
+
+/* reviews */
+/* Reviews Section Styling */
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.review-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.review-link a {
+    font-size: 0.9rem;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.review-link a:hover {
+    text-decoration: underline;
+}
+
+.review-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.review-item {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    flex: 1 1 calc(50% - 1rem); /* Two reviews side by side */
+}
+
+.review-avatar {
+    flex-shrink: 0;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background-color: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #6b7280;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1); /* Adjust color and spread as needed */
+}
+
+.review-content {
+    flex: 1;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.review-author {
+    font-weight: bold;
+}
+
+.review-date {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.review-rating {
+    color: #fbbf24;
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.review-text {
+    font-size: 1rem;
+    color: #374151;
+}
+
+.show-more {
+    font-size: 0.875rem;
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.show-more:hover {
+    text-decoration: none;
+}
+
+/* Avatar Circle */
+.review-avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f3f4f6;
+    margin-right: 1rem;
+}
+
+.review-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-circle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #6b7280;
+    background-color: #d1d5db;
+    text-transform: uppercase;
 }

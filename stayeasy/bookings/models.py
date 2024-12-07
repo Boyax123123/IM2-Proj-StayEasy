@@ -1,3 +1,6 @@
+
+
+# Create your models here.
 # from django.db import models
 # from accounts.models import Accounts
 # from properties.models import Property
@@ -46,6 +49,7 @@ class Bookings(models.Model):
     class Meta:
         ordering = ['-booking_date']  
         verbose_name = 'Booking'
+        app_label = 'bookings'
         verbose_name_plural = 'Bookings'
 
     def __str__(self):

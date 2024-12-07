@@ -1,6 +1,9 @@
 {% extends 'stayeasy/base.html'%}
 {% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
 {% block content %}
+
 <h1>Home page</h1>
 
 {% if user.is_authenticated %}
@@ -19,6 +22,10 @@
         <form action="{% url 'properties:create_property' %}" method="post">
             {% csrf_token %}
             <button type="submit">Add Property</button>
+        </form>
+        <form action="{% url 'properties:my_properties' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Host: My Properties</button>
         </form>
     {% endif %}
 
@@ -44,6 +51,12 @@
 
 <a href="{% url 'properties:listing' %}"><button type="button">Property Listings</button></a>
 <a href = "{% url 'properties:wishlists' %}"><button type = 'button'>Wishlist</button></a>
+<a href = "{% url 'bookings:my_bookings' %}"><button type = 'button'>Bookings</button></a>
 
+
+<form action="{% url 'restricted' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">restricted test</button>
+</form>
 <p>Test good</p>
 {% endblock %}

@@ -1,49 +1,88 @@
+<!DOCTYPE html>
 {% extends 'stayeasy/base.html' %}
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/listing.css' %}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Listings{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/property_listing.css' %}">
+    <script src="{% static 'js/listing.js' %}"></script>
+</head>
+
 <div class="conMid">
+
+    <!-- Sorting Buttons -->
+    <div class="conBtnSort">
+        <form action="{% url 'properties:listing' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" name="sortAlpha" class="btnSort" 
+                title="Sort Alphabetically" {% if sort_type == 'alpha' %} style="background-color: #ceedcc; border-bottom: 2px solid" {% endif %}>
+                Alphabetical
+            </button>
+            <button type="submit" name="sortPriceLower" class="btnSort" 
+                title="Sort by Lowest Price" {% if sort_type == 'price_low' %} style="background-color: #ceedcc; border-bottom: 2px solid" {% endif %}>
+                Price by Lowest
+            </button>
+            <button type="submit" name="sortPriceHigher" class="btnSort" 
+                title="Sort by Highest Price" {% if sort_type == 'price_high' %} style="background-color: #ceedcc; border-bottom: 2px solid" {% endif %}>
+                Price by Highest
+            </button>
+            <button type="submit" name="sortRating" class="btnSort" 
+                title="Sort by Rating" {% if sort_type == 'rating' %} style="background-color: #ceedcc; border-bottom: 2px solid" {% endif %}>
+                Rating
+            </button>
+        </form>
+    </div>
+
+    <!-- Property Cards -->
     <div class="container">
         {% for property in properties %}
-            <!-- Make the image and details clickable -->
+        <div class="conCard">
             <a href="{% url 'properties:property_details' property.id %}">
-                <div class="conCard">
-                    <div class="conImg" alt="{{ property.name }} " title="{{ property.name }}">
-                        {% if property.image %}
-                            <img src="{{ property.image.url }}" alt="{{ property.name }} " title="{{ property.name }}">
-                        {% else %}
-                            <p>No image available</p>
-                        {% endif %}
-                    </div>
-                    <div class="conPropertyDetails">
-                        <h2 class="textName">{{ property.name }}</h2>
-                        <h2 class="textPrice">₱{{ property.price }}</h2>
-                        <h2 class="textRating">⭐ {{ property.rating }}</h2>
-                        <!-- Optional: Add a heart icon or action button here -->
-                        <div class="conHostOptions">
-                            <button type="submit" value="{{ property.id }}">Edit</button>
-                            <button type="submit" value="{{ property.id }}">Delete</button>
-                        </div>
-                    </div>
+                <div class="conImg" alt="{{ property.name }}" title="{{ property.name }}">
+                    {% if property.image %}
+                        <img src="{{ property.image.url }}" alt="{{ property.name }}" title="{{ property.name }}">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
                 </div>
             </a>
-
-            <!-- Form to delete property (host specific) -->
-            {% if property.host == user %}
-                <form action="{% url 'properties:delete_property' property.id %}" method="post">
+            <div class="conPropertyDetails">
+                <div class="details_top">
+                    <h2 class="textName">{{ property.name }}</h2>
                     {% csrf_token %}
-                    <button type="submit">Delete Property</button>
-                </form>
-
-                <!-- Add to wishlist form -->
-                <form action="{% url 'properties:add_wishlist' %}" method="post">
-                    {% csrf_token %}
-                    <button type="submit" name="property_id" value="{{ property.id }}">+♡</button>
-                </form>
-                <hr>
-            {% endif %}
+                    {% if property in wishlists %}
+                        <!-- Trigger the Remove Wishlist Modal -->
+                        <button class="wish" 
+                            data-property-id="{{ property.id }}" 
+                            data-property-name="{{ property.name }}"
+                            onclick="showRemoveWishlistModal(this)">
+                            ❤️ 
+                         </button>
+                    {% else %}
+                        <form action="{% url 'properties:listing' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="add_to_wishlist" value="{{ property.id }}">
+                            <button class="wish" type="submit" title="Add to Wishlist">🤍</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <h2 class="textPrice">₱ {{ property.price }}</h2>
+                <h2 class="textRating">
+                    {% if property.rating == 0.0 %}
+                     ★ No rating yet
+                    {% else %}
+                      ★ {{ property.rating }}
+                    {% endif %}
+                </h2>
+                  
+            </div>
+        </div>
         {% endfor %}
     </div>
 </div>
+
 {% endblock %}

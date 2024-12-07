@@ -8,9 +8,9 @@ class Accounts(AbstractUser):
     first_name = models.CharField(max_length=50, null=False)  
     last_name = models.CharField(max_length=50, null=False)  
     phone_number = models.CharField(max_length=11, null=False)  
-    balance = models.DecimalField(default=0, decimal_places=2, max_digits=10)  
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     role = models.CharField(max_length=10, default="customer")  
-    profile_picture = models.ImageField(default='images/iconProfileDefault.jpg', blank=True, upload_to='property/static/media/')  
+    profile_picture = models.ImageField(default='images/iconProfileDefault.jpg', blank=True, upload_to='profile_pictures/' )  
     about_me = models.TextField(max_length=1000, blank=True) 
 
     

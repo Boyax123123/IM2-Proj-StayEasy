@@ -1,8 +1,137 @@
+<!DOCTYPE html>
+{% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
 
-{% block content %}
-    <form action='{% url "accounts:signup"%}' method='post'>
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type='submit'>Sign Up</button>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StayEasy: Sign Up</title>
+</head>
+<body>
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="conMain">
+  <div class="logBox">
+    <h1 class="logtext">StayEasy Sign Up</h1>
+    <br>
+    <form action="{% url 'accounts:signup' %}" method="post">
+      {% csrf_token %}
+      
+      <!-- Render Email field -->
+      <div class="form-group">
+        <label for="{{ form.email.id_for_label }}">Email:</label>
+        <br>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="error">
+            {% for error in form.email.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Render Username field -->
+      <div class="form-group">
+        <label for="{{ form.username.id_for_label }}">Username:</label>
+        <br>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <div class="error">
+            {% for error in form.username.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Render First Name field -->
+      <div class="form-group">
+        <label for="{{ form.first_name.id_for_label }}">First Name:</label>
+        <br>
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+          <div class="error">
+            {% for error in form.first_name.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Render Last Name field -->
+      <div class="form-group">
+        <label for="{{ form.last_name.id_for_label }}">Last Name:</label>
+        <br>
+        {{ form.last_name }}
+        {% if form.last_name.errors %}
+          <div class="error">
+            {% for error in form.last_name.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Render Phone Number field -->
+      <div class="form-group">
+        <label for="{{ form.phone_number.id_for_label }}">Phone Number:</label>
+        <br>
+        {{ form.phone_number }}
+        {% if form.phone_number.errors %}
+          <div class="error">
+            {% for error in form.phone_number.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Render Password field -->
+      <div class="form-group">
+        <label for="{{ form.password1.id_for_label }}">Password:</label>
+        <br>
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+          <div class="error">
+            {% for error in form.password1.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Render Password Confirmation field -->
+      <div class="form-group">
+        <label for="{{ form.password2.id_for_label }}">Confirm Password:</label>
+        <br>
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+          <div class="error">
+            {% for error in form.password2.errors %}
+              <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+      <br>
+
+      <!-- Submit button -->
+      <button type="submit" class="submitBtn">Sign Up</button>
     </form>
-{% endblock %}
+  
+    <!-- Log in link -->
+      <p class="signupLink">Already have an account? <br><a href="{% url 'accounts:login' %}">Log in here</a></p>
+  </div>
+</div>
+
+</body>
+</html>

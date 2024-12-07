@@ -1,0 +1,62 @@
+{% extends 'stayeasy/base.html'%}
+{% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
+{% block content %}
+<div id="conRestricted">
+    <h1>Access Restricted</h1>
+</div>
+<body>
+
+    <h1>{{ property.name }}</h1>
+    <p>{{ property.description }}</p>
+    <p><strong>Price per night: ${{ property.price }}</strong></p>
+
+    <h2>Book Now</h2>
+
+    <form method="POST" action="{% url 'properties:property_details' property.id %}">
+        {% csrf_token %}
+        
+        <!-- Check-in and Check-out Date Inputs -->
+        <label for="check-in">Check-in Date:</label>
+        <input type="date" id="check-in" name="checkin_date" required>
+        
+        <label for="check-out">Check-out Date:</label>
+        <input type="date" id="check-out" name="checkout_date" required>
+
+        <!-- Total cost (calculated on the frontend or server-side) -->
+        <p id="total-cost">Total Cost: $<span id="cost">0.00</span></p>
+        
+        <!-- Submit Button -->
+        <button type="submit">Book Now</button>
+    </form>
+
+    <p id="message"></p>
+
+    <!-- JavaScript for handling unavailable dates -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const unavailableDates = JSON.parse('{{ unavailable_dates|safe }}');
+            const checkInInput = document.getElementById('check-in');
+            const checkOutInput = document.getElementById('check-out');
+
+            // Disable unavailable dates in the date inputs
+            function disableUnavailableDates(input) {
+                input.addEventListener('focus', function () {
+                    const picker = input.type === 'date' ? input : null;
+                    if (picker) {
+                        unavailableDates.forEach(date => {
+                            const formattedDate = new Date(date).toISOString().split('T')[0];
+                            picker.querySelector(`[value="${formattedDate}"]`).disabled = true;
+                        });
+                    }
+                });
+            }
+
+            disableUnavailableDates(checkInInput);
+            disableUnavailableDates(checkOutInput);
+        });
+    </script>
+
+</body>
+{% endblock %}

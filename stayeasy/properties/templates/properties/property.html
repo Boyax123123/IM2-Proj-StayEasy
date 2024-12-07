@@ -1,154 +1,291 @@
-{% extends 'stayeasy/base.html' %}
 <!DOCTYPE html>
-
+{% extends 'stayeasy/base.html'%}
 {% load static %}
 {% load livereload_tags %}
 {% livereload_script %}
-
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/property.css' %}">
-<div class="conMid">
-    <div id="conProperty">
-        <!-- Property Image -->
-        <div id="conImg" class="centered test" title="{{ property.name }} picture">
-            {% if property.image %}
-                <img src="{{ property.image.url }}" alt="{{ property.name }}" title="{{ property.name }}">
-            {% else %}
-                <p>No image available</p>
-            {% endif %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Property Details{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/property.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+
+<div id="conProperty">
+    <!-- Property Image -->
+    
+    <div id="conImg" title="{{ property.name }} picture">
+        {% if property.image %}
+        <img src="{{ property.image.url }}" alt="{{ property.name }}" title="{{ property.name }}">
+        {% else %}
+        <div class="placeholder">
+            <p>No image available</p>
         </div>
+        {% endif %}
+    </div>
 
-        <!-- Property Details -->
-        <div id="conDesc" class="test card">
-            <h3>Details:</h3>
-            <p>{{ property.description }}</p>
-            <p>Location: {{ property.address }}</p>
-        </div>
+    <!-- Property Details -->
+    <div id="conDesc" class="card no-gap">
+        <h3>Details:</h3>
+        <p>{{ property.description }}</p>
+        <p>Location: {{ property.address }}</p>
+    </div>
 
-        <!-- Property Booking Card url 'bookingslist' -->
-        <div id="conDetail" class="card">
-            <form method="POST" action="">
-                {% csrf_token %}
-                <div class="property-card">
-                    <!-- Property Header -->
-                    <div class="property-header">
-                        <h2 id="property-name">{{ property.name }}</h2>
-                        <div class="price">
-                            <span class="amount">₱ {{ property.price|floatformat:2 }}</span>
-                            <span class="per-night">/ night</span>
-                        </div>
-                        <div class="rating">
-                            <span class="star">★</span>
-                            <span class="rating-value">{{ property.rating }}</span>
-                        </div>
+    <!-- Property Booking Card -->
+    <div id="conDetail" class="card">
+        <form id="bookingForm" method="POST">
+            {% csrf_token %}
+            <div class="property-card">
+                <!-- Property Header -->
+                <div class="property-header">
+                    <h2 id="property-name">{{ property.name }}</h2>
+
+                    <div class="price">
+                        <span class="amount">₱ {{ property.price|floatformat:2 }}</span>
+                        <span class="per-night">/ night</span>
                     </div>
-                    <button class="favorite-btn" aria-label="Add to favorites">♡</button>
-
-                    <!-- Host Info -->
-                    <div class="host-info">
-                        <div class="host-avatar" aria-label="Host">👤</div>
-                        <span class="host-name">{{ property.host.name }}</span>
-                    </div>
-
-                    <!-- Check-in/Check-out -->
-                    <div class="check-dates">
-                        <div class="check-box">
-                            <label for="check-in" class="check-label">CHECK-IN</label>
-                            <input type="date" id="check-in" name="checkin_date" class="check-input" min="{{ today|date:'Y-m-d' }}" required>
-                        </div>
-                        <div class="check-box">
-                            <label for="check-out" class="check-label">CHECK-OUT</label>
-                            <input type="date" id="check-out" name="checkout_date" class="check-input" min="{{ today|date:'Y-m-d' }}" required>
-                        </div>
-                    </div>
-
-                    <!-- Total Section -->
-                    <div class="total-section">
-                        <span class="total-label">Total:</span>
-                        <span class="total-amount">₱ 0.00</span>
-                    </div>
-
-                    <!-- Hidden Inputs for Customer and Property -->
-                    <input type="hidden" name="customer_id" value="{{ user.id }}">
-                    <input type="hidden" name="property_id" value="{{ property.id }}">
-                    <input type="hidden" name="total_cost" id="total-cost" value="0.00">
-
-                    <!-- Book Button -->
-                    <button class="book-btn" type="submit" disabled>Book</button>
+                    <h2 class="rating">
+                        {% if property.rating == 0.0 %}
+                        ★ No rating yet
+                        {% else %}
+                        ★ {{ property.rating }}
+                        {% endif %}
+                    </h2>
                 </div>
-            </form>
-        </div>
 
-        <!-- Reviews Section -->
-        <div id="conReviews" class="test card">
-            <h3>Reviews</h3>
-            <!-- Placeholder for reviews -->
-            <p>No reviews yet</p>
+                <!-- Check-in/Check-out -->
+                <div class="check-dates">
+                    <div class="check-box">
+                        <label for="check-in" class="check-label">Check-in Date</label>
+                        <input type="text" id="check-in" name="checkin_date" class="check-input" placeholder="Select check-in date" required>
+                    </div>
+                    <div class="check-box">
+                        <label for="check-out" class="check-label">Check-out Date</label>
+                        <input type="text" id="check-out" name="checkout_date" class="check-input" placeholder="Select check-out date" required>
+                    </div>
+                    <p id="total_days" class="text-gray-700 font-bold"></p>
+                </div>
+
+                <!-- Total Section -->
+                <div class="total-section">
+                    <span class="total-label">Total:</span>
+                    <span class="total-amount">₱ 0.00</span>
+                </div>
+
+                <!-- Hidden Inputs for Customer and Property -->
+                <input type="hidden" name="customer_id" value="{{ user.id }}">
+                <input type="hidden" name="property_id" value="{{ property.id }}">
+                <input type="hidden" name="total_cost" id="total-cost" value="0.00">
+                
+                {% if booking_status_message %}
+                <div class="booking-status-message">
+                    {{ booking_status_message }}
+                </div>
+                {% endif %}
+                <!-- Book Button -->
+                <button type="button" id="showConfirmModalBtn" class="book-btn" disabled>Book</button>
+            </div>
+        </form>
+       
+    </div>
+    <div id="conReviews" class="card">
+        <!-- Review Header -->
+        <div class="review-header">
+            <div class="review-title">
+                ★ {{ property.rating|floatformat:1 }} - {{ reviews.count }} Reviews
+            </div>
+            <div class="review-link">
+                <a href="{% url 'reviews:property_reviews' property.id %}">See All Reviews →</a>
+            </div>
+        </div>
+    
+        <!-- Review List -->
+        <div class="review-list">
+            {% for review in reviews %}
+            <div class="review-item">
+                <!-- Review Avatar -->
+                <div class="review-avatar">
+                    {% if review.customer.profile_picture %}
+                    <img src="{{ review.customer.profile_picture.url }}" alt="{{ review.customer.first_name }}" />
+                    {% else %}
+                    <div class="avatar-circle">
+                        <span>
+                            {{ review.customer.first_name|default:"Anonymous"|slice:":1" }}
+                            {{ review.customer.last_name|default:""|slice:":1" }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+    
+                <!-- Review Content -->
+                <div class="review-content">
+                    <div class="review-header">
+                        <span class="review-author">
+                            {{ review.customer.first_name|default:"Anonymous" }}
+                            {{ review.customer.last_name|default:"" }}
+                        </span>
+                        <span class="review-date">{{ review.review_date|date:"n/j/Y" }}</span>
+                    </div>
+                    <div class="review-rating">
+                        ★ {{ review.rating|floatformat:1 }}
+                    </div>
+                    <div class="review-text">
+                        {% if review.review|length > 100 %}
+                        {{ review.review|slice:":100" }}...
+                        {% else %}
+                        {{ review.review }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No reviews yet.</p>
+            {% endfor %}
         </div>
     </div>
+    
 </div>
 
+<!-- Booking Confirmation Modal -->
+<dialog id="modalBooking" class="modalBooking" hidden>
+    <div class="modalBooking-content">
+        <h2 class="modalBooking-title">Booking Details</h2>
+        <div class="modalBooking-details">
+            <div class="modalBooking-info">
+                <p><strong>Property name:</strong> {{ property.name }}</p>
+                <p><strong>Address:</strong> {{ property.address }}</p>
+                <p>
+                    <strong>Dates:</strong> <span id="modalBookingCheckIn"></span> - <span id="modalBookingCheckOut"></span>
+                </p>
+                <p><strong>Duration:</strong> <span id="modalBookingDays"></span> days</p>
+            </div>
+            <div class="modalBooking-image">
+                {% if property.image %}
+                <img src="{{ property.image.url }}" alt="{{ property.name }}" />
+                {% else %}
+                <div class="placeholder">
+                    <p>Property Picture Area</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <hr />
+        <div class="modalBooking-total">
+            <span><strong>Total:</strong></span>
+            <span id="modalBookingTotal" class="totalAmount">₱ 0.00</span>
+        </div>
+        <div class="modalBooking-actions">
+            <button id="modalBookingConfirm" class="btnConfirm">Confirm</button>
+            <button id="modalBookingCancel" class="btnCancel">Cancel</button>
+        </div>
+    </div>
+</dialog>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const checkInInput = document.getElementById('check-in');
-        const checkOutInput = document.getElementById('check-out');
-        const totalAmountElement = document.querySelector('.total-amount');
-        const bookButton = document.querySelector('.book-btn');
-        const pricePerNight = parseFloat('{{ property.price }}');
+document.addEventListener("DOMContentLoaded", function () {
+    const modalBooking = document.getElementById("modalBooking");
+    const modalBookingCheckIn = document.getElementById("modalBookingCheckIn");
+    const modalBookingCheckOut = document.getElementById("modalBookingCheckOut");
+    const modalBookingDays = document.getElementById("modalBookingDays");
+    const modalBookingTotal = document.getElementById("modalBookingTotal");
+    const modalBookingCancel = document.getElementById("modalBookingCancel");
+    const modalBookingConfirm = document.getElementById("modalBookingConfirm");
 
-        // Format price for display
-        function formatPrice(amount) {
-            return '₱ ' + amount.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-        }
+    const bookButton = document.getElementById("showConfirmModalBtn");
 
-        // Calculate total price
-        function calculateTotal() {
+    const checkInInput = document.getElementById("check-in");
+    const checkOutInput = document.getElementById("check-out");
+    const totalCostInput = document.getElementById("total-cost");
+    const totalAmountElement = document.querySelector(".total-amount");
+    const totalDaysElement = document.getElementById("total_days");
+
+    // Safely parse unavailable_dates passed from backend
+    const unavailableDates = JSON.parse(`{{ unavailable_dates|safe }}`);
+
+    // Initialize Flatpickr
+    flatpickr(checkInInput, {
+        dateFormat: "Y-m-d",
+        disable: unavailableDates,
+        onChange: calculateTotalDaysAndCost,
+    });
+
+    flatpickr(checkOutInput, {
+        dateFormat: "Y-m-d",
+        disable: unavailableDates,
+        onChange: calculateTotalDaysAndCost,
+    });
+
+    function calculateTotalDaysAndCost() {
+        if (checkInInput.value && checkOutInput.value) {
             const checkInDate = new Date(checkInInput.value);
             const checkOutDate = new Date(checkOutInput.value);
-
-            if (checkInInput.value && checkOutInput.value && checkInDate <= checkOutDate) {
-                const diffTime = checkOutDate - checkInDate;
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                const totalPrice = diffDays * pricePerNight;
-                totalAmountElement.textContent = formatPrice(totalPrice);
-
-                // Set the total cost to the hidden field
-                document.getElementById('total-cost').value = totalPrice.toFixed(2);
-
+            const days = Math.ceil((checkOutDate - checkInDate) / (1000 * 60 * 60 * 24));
+            if (days > 0) {
+                const totalCost = days * parseFloat("{{ property.price|floatformat:2 }}");
+                totalDaysElement.textContent = `Total Days: ${days}`;
+                totalAmountElement.textContent = `₱ ${totalCost.toFixed(2)}`;
+                totalCostInput.value = totalCost.toFixed(2);
                 bookButton.disabled = false;
             } else {
-                totalAmountElement.textContent = '₱ 0.00';
-                bookButton.disabled = true;
+                resetBookingDetails();
             }
+        } else {
+            resetBookingDetails();
         }
+    }
 
-        // Update check-out minimum date and calculate total
-        checkInInput.addEventListener('change', function () {
-            if (this.value) {
-                const nextDay = new Date(this.value);
-                nextDay.setDate(nextDay.getDate() + 1);
-                const nextDayStr = nextDay.toISOString().split('T')[0];
-                checkOutInput.min = nextDayStr;
+    function resetBookingDetails() {
+        totalDaysElement.textContent = "";
+        totalAmountElement.textContent = "₱ 0.00";
+        totalCostInput.value = "0.00";
+        bookButton.disabled = true;
+    }
 
-                if (checkOutInput.value && checkOutInput.value < nextDayStr) {
-                    checkOutInput.value = nextDayStr;
-                }
-            }
-            calculateTotal();
-        });
+    // Open modal
+    bookButton.addEventListener("click", function () {
+        const checkInDate = checkInInput.value;
+        const checkOutDate = checkOutInput.value;
+        const totalCost = totalCostInput.value;
 
-        checkOutInput.addEventListener('change', calculateTotal);
+        const days = Math.ceil(
+            (new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24)
+        );
 
-        // Favorite button toggle
-        const favoriteBtn = document.querySelector('.favorite-btn');
-        favoriteBtn.addEventListener('click', function () {
-            this.textContent = this.textContent === '♡' ? '♥' : '♡';
-        });
+        modalBookingCheckIn.textContent = checkInDate;
+        modalBookingCheckOut.textContent = checkOutDate;
+        modalBookingDays.textContent = days;
+        modalBookingTotal.textContent = `₱ ${parseFloat(totalCost).toFixed(2)}`;
+
+        modalBooking.showModal();
     });
-</script>
 
+    // Cancel modal
+    modalBookingCancel.addEventListener("click", function () {
+        modalBooking.close();
+    });
+
+    // Confirm booking
+    modalBookingConfirm.addEventListener('click', async function () {
+            const formData = new FormData(document.getElementById('bookingForm'));
+
+            const response = await fetch("{% url 'properties:booking_create' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            });
+
+            if (response.ok) {
+                alert('Booking confirmed!');
+                modalBooking.close();
+                location.reload(); // Refresh the page
+            } else {
+                alert('Something went wrong. Please try again.');
+            }
+        });
+});
+</script>
 {% endblock %}
