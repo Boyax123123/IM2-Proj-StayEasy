@@ -4,8 +4,108 @@
 {% load static %}
 {% load livereload_tags %}
 {% livereload_script %}
-{% block content %}
-<div id="conRestricted">
-    <h1>This is profile</h1>
-</div>
-{% endblock %}
+<html lang="en">
+    {% block content %}
+    <body>
+        <div id="conRestricted">
+            <style>
+                .gridbox {
+                    display: grid;
+                    grid-template-columns: 1fr 2fr;
+                }
+                .profile-container {
+                    padding: 40px;
+                }
+                .options {
+                    border-right: 2px solid #ccc;
+                    padding: 40px;
+                }
+                .options h1 {
+                    font-size: 48px;
+                    margin-bottom: 40px;
+                }
+                .options ul {
+                    list-style: none;
+                    padding: 0;
+                }
+                .options ul li {
+                    margin-bottom: 30px;
+                    font-size: 36px;
+                    cursor: pointer;
+                    transition: .5s ease;
+                }
+                .options ul li a {
+                    text-decoration: none;
+                    color: #000;
+                }
+                .options ul li:hover {
+                    color: #4DCC79;
+                }
+                .profile {
+                    display: grid;
+                    align-items: center;
+                    justify-content: space-around;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 40px;
+                }
+                .profile img {
+                    width: 200px;
+                    height: 200px;
+                    border-radius: 50%;
+                    object-fit: cover;
+                }
+                .user-details {
+                    margin-top: 60px;
+                }
+                .user-details th, .user-details td {
+                    text-align: left;
+                    padding: 10px 20px;
+                    font-size: 36px;
+                }
+            </style>
+
+            <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+            <!-- <h1>Public Profile</h1> -->
+            <div class="gridbox">
+                <div class="options">
+                    <div class="content">
+                        <h1>SETTINGS</h1>
+                        <ul>
+                            <li><a href="#">Public Profile</a></li>
+                            <li><a href="{% url 'accounts:account_settings' %}">Account Settings</a></li>
+                            <li><a href="#">Notifications</a></li>
+                            <li><a href="{% url 'accounts:remove_account' %}" onclick="return confirm('Are you sure you want to remove your account? This action cannot be undone.')">Remove Account</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="profile-container">
+                    <div class="profile">
+                        <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+                        <h2>{{ user.username }}</h2>
+                    </div>
+                    <table class="user-details">
+                        <tr>
+                            <th>Firstname:</th>
+                            <td>{{ user.first_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Lastname:</th>
+                            <td>{{ user.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email:</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone Number:</th>
+                            <td>{{ user.phone_number }}</td>
+                        </tr>
+                        <tr>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+    {% endblock %}
+</html>

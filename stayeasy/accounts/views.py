@@ -26,12 +26,16 @@ def signup_view(request):
             role = 'host'
         else:
             role = 'customer'     
-        form = SignupForm(request.POST)
+        form = SignupForm(request.POST, request.FILES)
         if form.is_valid():   
             user = form.save(commit=False)
             user.role = role
             user.save()  
-            return redirect('landingpage')  
+            if 'profile_picture' in request.FILES:
+                user.profile_picture = request.FILES['profile_picture']
+                user.save()
+                
+            return redirect('landingpage')
     else:
         form = SignupForm()
 
@@ -69,6 +73,12 @@ def logout_view(request):
     messages.success(request, "You have been logged out successfully.")  # Optional success message
     return redirect('landingpage') 
 
+def remove_account(request):
+    if request.method == "POST":
+        request.user.delete()
+        messages.success(request, "Your account has been deleted.")
+        return redirect('landingpage')
+    return redirect('accounts:account_settings')
 
 # wallet=====
 
@@ -96,3 +106,43 @@ def deposit(request):
             return JsonResponse({"status": "error", "message": "Please enter a valid number."})
     return JsonResponse({"status": "error", "message": "Invalid request method."})
 
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.core.exceptions import ValidationError
+
+@login_required
+def account_settings(request):
+    if request.method == "POST":
+        if "delete_picture" in request.POST:
+            request.user.profile_picture.delete()
+            request.user.profile_picture = 'images/iconProfileDefault.jpg'
+            request.user.save()
+        else:
+            request.user.username = request.POST.get("username", request.user.username)
+            request.user.first_name = request.POST.get("first_name", request.user.first_name)
+            request.user.last_name = request.POST.get("last_name", request.user.last_name)
+            request.user.email = request.POST.get("email", request.user.email)
+            if "phone_number" in request.POST:
+                phone_number = request.POST.get("phone_number", request.user.phone_number)
+                if not phone_number.isdigit() or len(phone_number) < 10:
+                    raise ValidationError("Invalid phone number")  # Validate the phone number
+                request.user.phone_number = phone_number
+            if password := request.POST.get("password"):
+                request.user.set_password(password)
+            if "profile_picture" in request.FILES:
+                request.user.profile_picture = request.FILES["profile_picture"]
+            request.user.save()
+            return HttpResponseRedirect(reverse('accounts:account_settings'))
+
+    return render(request, 'accounts/account_settings.html')
+
+
+@csrf_exempt
+@login_required
+def remove_account(request):
+    if request.method == "POST":
+        request.user.delete()
+        messages.success(request, "Your account has been deleted.")
+        return redirect('landingpage')
+    return redirect('accounts:account_settings')
