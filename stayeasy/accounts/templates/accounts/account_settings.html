@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% extends 'stayeasy/base.html' %}
+{% load static %}
+{% load livereload_tags %}
+{% livereload_script %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+<div class="conMain">
+  <div class="logBox">
+    <h1 class="logtext">Account Settings</h1>
+    <br>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <style>
+        /* Profile picture styles */
+        .profile-picture {
+        display: block;
+        margin: 0 auto;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+        }
+
+        /* When the user has a profile picture */
+        .profile-picture.has-picture {
+        width: 120px;
+        height: 120px;
+        }
+
+        /* Default placeholder styling */
+        .profile-picture.no-picture {
+        width: 100px;
+        height: 100px;
+        opacity: 0.6;
+        border: 2px dashed #ccc;
+        }
+
+        .profile-picture:hover {
+        transform: scale(1.1); /* Slight zoom on hover for interactivity */
+        }
+      </style>
+      
+      <!-- Profile Picture Section -->
+      <div class="form-group">
+        {% if user.profile_picture %}
+          <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="profile-picture has-picture">
+        {% else %}
+          <img src="{% static 'images/default-profile.png' %}" alt="Default Profile Picture" class="profile-picture no-picture">
+        {% endif %}
+        <br>
+        <label for="profile_picture">Change Picture</label>
+        <br>
+        <input type="file" name="profile_picture" id="profile_picture">
+        <br>
+        <button type="submit" name="delete_picture" class="btn delete-btn">Delete Picture</button>
+      </div>
+      <br>
+
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username">Username:</label>
+        <br>
+        <input type="text" name="username" id="username" value="{{ user.username }}" required>
+      </div>
+      <br>
+
+      <!-- First Name Field -->
+      <div class="form-group">
+        <label for="first_name">First Name:</label>
+        <br>
+        <input type="text" name="first_name" id="first_name" value="{{ user.first_name }}" required>
+      </div>
+      <br>
+
+      <!-- Last Name Field -->
+      <div class="form-group">
+        <label for="last_name">Last Name:</label>
+        <br>
+        <input type="text" name="last_name" id="last_name" value="{{ user.last_name }}" required>
+      </div>
+      <br>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <br>
+        <input type="email" name="email" id="email" value="{{ user.email }}" required>
+      </div>
+      <br>
+
+      <div class="form-group">
+        <label for="phone_number">Phone Number:</label>
+        <br>
+        <input type="text" name="phone_number" id="phone_number" value="{{ user.phone_number }}" placeholder="Enter your phone number">
+    </div>
+    <br>    
+
+    <!-- Password Field -->
+    <div class="form-group">
+        <label for="password">New Password:</label>
+        <br>
+        <input type="password" name="password" id="password" placeholder="Enter new password">
+    </div>
+    <br>
+
+    <!-- Confirm Password Field -->
+    <div class="form-group">
+        <label for="confirm_password">Confirm Password:</label>
+        <br>
+        <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm new password">
+    </div>
+    <br>
+
+      <!-- Save Changes Button -->
+      <button type="submit" class="submitBtn">Save Changes</button>
+    </form>
+    <br>
+
+    <!-- Remove Account Form -->
+    <form method="POST" action="{% url 'accounts:remove_account' %}">
+      {% csrf_token %}
+      <button type="submit" class="submitBtn remove-account-btn" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.')">
+        Remove Account
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
