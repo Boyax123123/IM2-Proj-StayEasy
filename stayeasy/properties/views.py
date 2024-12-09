@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime, timedelta
 import json
 from django.utils.timezone import now
+from django.db.models import QuerySet
+from django.db.models import Q
 
 
 
@@ -309,51 +311,88 @@ def host_dashboard(request):
 
 
 
-# listing-------------------------------
+@csrf_exempt
 @csrf_exempt
 def listing(request):
     user = request.user  # Refers to the currently logged-in Accounts user
     context = {}
 
-    # Get or create a wishlist for the logged-in user (Account)
-    wishlist, created = Wishlist.objects.get_or_create(account=user)
-    wishlisted_properties = wishlist.property.all()  # Get all properties in this user's wishlist
+    # Handle wishlist for authenticated users
+    if request.user.is_authenticated:
+        wishlist, created = Wishlist.objects.get_or_create(account=user)
+        wishlisted_properties = wishlist.property.all()  # Get all properties in this user's wishlist
+    else:
+        wishlisted_properties = Property.objects.none()  # Empty queryset for unauthenticated users
 
     # Default to displaying all properties
     properties = Property.objects.all()
     sort_type = "default"  # Default sorting type
+    search_query = request.POST.get('searchQuery', '').strip()  # Get search query from form
 
-    # Handle form submissions for adding/removing properties from wishlist
-    if request.method == "POST":
-        if "add_to_wishlist" in request.POST:
-            property_id = request.POST.get("add_to_wishlist")
-            add_to_wishlist(request, property_id)
-            return redirect('properties:listing')  # Redirect after adding to wishlist
+    # Handle Add to Wishlist
+    if "add_to_wishlist" in request.POST and request.user.is_authenticated:
+        property_id = request.POST.get("add_to_wishlist")
+        property_to_add = Property.objects.get(id=property_id)
+        wishlist, created = Wishlist.objects.get_or_create(account=user)
+        wishlist.property.add(property_to_add)
 
-        elif "remove_from_wishlist" in request.POST:
-            property_id = request.POST.get("remove_from_wishlist")
-            remove_from_wishlist(request, property_id)
-           
-        # Sorting properties based on user input
-        if 'sortPriceHigher' in request.POST:
-            properties = Property.objects.order_by('-price')
-            sort_type = "price_high"
-        elif 'sortPriceLower' in request.POST:
-            properties = Property.objects.order_by('price')
-            sort_type = "price_low"
-        elif 'sortAlpha' in request.POST:
-            properties = Property.objects.order_by('name')
-            sort_type = "alpha"
-        elif 'sortRating' in request.POST:
-            properties = Property.objects.order_by('-rating')
-            sort_type = "rating"
+    # Handle Remove from Wishlist
+    if "remove_from_wishlist" in request.POST and request.user.is_authenticated:
+        property_id = request.POST.get("remove_from_wishlist")
+        property_to_remove = Property.objects.get(id=property_id)
+        wishlist = Wishlist.objects.get(account=user)
+        wishlist.property.remove(property_to_remove)
 
-    # Pass sorted properties and wishlisted properties to the template
+    # Search logic
+    if search_query:
+        if search_query.isdigit():  # If the search query is numeric
+            number = int(search_query)
+            # Determine the range
+            if number < 1000:  # If input is in the hundreds
+                range_start = number
+                range_end = range_start + 99
+            else:  # If input is in the thousands
+                range_start = number
+                range_end = range_start + 999
+
+            # Filter properties by price within the range
+            properties = properties.filter(price__gte=range_start, price__lte=range_end)
+        else:
+            # Filter properties by name or address containing the search term
+            properties = properties.filter(
+                Q(name__icontains=search_query) | Q(address__icontains=search_query)
+            )
+
+    # Sorting logic (applies to filtered results if a search query exists)
+    if "sortPriceHigher" in request.POST:
+        properties = properties.order_by('-price')
+        sort_type = "price_high"
+    elif "sortPriceLower" in request.POST:
+        properties = properties.order_by('price')
+        sort_type = "price_low"
+    elif "sortAlpha" in request.POST:
+        properties = properties.order_by('name')
+        sort_type = "alpha"
+    elif "sortRating" in request.POST:
+        properties = properties.order_by('-rating')
+        sort_type = "rating"
+
+    # Pass data to the template
     context['properties'] = properties
     context['wishlists'] = wishlisted_properties
-    context['sort_type'] = sort_type  # Pass the sorting state to the template
+    context['sort_type'] = sort_type
+    context['is_authenticated'] = request.user.is_authenticated
+    context['search_query'] = search_query  # Pass search query back to the template
     return render(request, 'properties/listing.html', context)
 
+
+    # Pass data to the template
+    context['properties'] = properties
+    context['wishlists'] = wishlisted_properties
+    context['sort_type'] = sort_type
+    context['is_authenticated'] = request.user.is_authenticated
+    context['search_query'] = search_query  # Pass search query back to the template
+    return render(request, 'properties/listing.html', context)
 
 @csrf_exempt    
 def deleteProperty(request, id):
@@ -391,8 +430,8 @@ def remove_from_wishlist(request, property_id):
 
 def wishlists(request):
     # Ensure the user is a customer
-    if request.user.role != 'customer':
-        return redirect('restricted')  
+    if not request.user.is_authenticated or request.user.role != 'customer':
+        return redirect('restricted')
 
     user = request.user
     context = {}
@@ -401,10 +440,23 @@ def wishlists(request):
     wishlist, created = Wishlist.objects.get_or_create(account=user)
     properties = wishlist.property.all()
 
-    # Default sorting type
+    # Default sorting type and search query
     sort_type = "default"
+    search_query = ""
 
     if request.method == "POST":
+        # Search logic
+        search_query = request.POST.get("searchQuery", "").strip()
+        if search_query:
+            if search_query.isdigit():  # If the search query is numeric
+                min_value = int(search_query)
+                max_value = min_value + (1000 if len(search_query) > 2 else 100) - 1
+                properties = properties.filter(price__gte=min_value, price__lte=max_value)
+            else:  # Search by name or address
+                properties = properties.filter(
+                    Q(name__icontains=search_query) | Q(address__icontains=search_query)
+                )
+
         # Sorting logic
         if 'sortPriceHigher' in request.POST:
             properties = properties.order_by('-price')
@@ -426,6 +478,7 @@ def wishlists(request):
     # Pass data to the template
     context['properties'] = properties
     context['sort_type'] = sort_type  # Maintain the selected sorting option
+    context['search_query'] = search_query  # Maintain the search input
     return render(request, "properties/wishlist.html", context)
 
 

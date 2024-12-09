@@ -134,15 +134,18 @@
 </div>
 
 <!-- Cancel Confirmation Modal -->
-<dialog id="modalConfirmation" class="modal">
-    <div class="modal-content">
-        <h3>Cancel Booking?</h3>
-        <div class="modal-actions">
-            <button id="btnCancel" class="cancel">No</button>
-            <button id="btnConfirm" class="confirm">Yes, Cancel</button>
+<dialog id="modalConfirmation" class="cfmModal">
+    <div class="cfmModalContent">
+        <span class="closeCfmModal" title="Close Modal" onclick="closeConfirmationModal()">&times;</span>
+        <h3 class="cfmModalTitle">Cancel Booking?</h3>
+        <div class="cfmModalActions">
+            <button id="btnConfirm" class="cfmBtnConfirm">Yes, Cancel</button>
+            <button id="btnCancel" class="cfmBtnCancel">No</button>
+            
         </div>
     </div>
 </dialog>
+
 
 <script>
     let selectedBookingId = null;

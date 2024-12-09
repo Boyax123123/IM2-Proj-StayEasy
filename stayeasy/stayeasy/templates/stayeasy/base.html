@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Document{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modals.css' %}">
     <script src="{% static 'js/base.js' %}"></script>
 </head>
 
@@ -78,9 +79,55 @@
     </div>
 
     <footer>
-        <div>Footer part</div>
+        <div class="footer-section">
+            <h4>About StayEasy</h4>
+            <ul>
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms & Conditions</a></li>
+            </ul>
+        </div>
+    
+        <div class="footer-section">
+            <h4>Get Involved</h4>
+            <ul>
+                <li><a href="#" onclick="openHostModal()">Become a Host</a></li>
+                <li><a href="#">Write a Review</a></li>
+                <li><a href="#">Help Center</a></li>
+            </ul>
+        </div>
+    
+        <div class="footer-section">
+            <h4 class="footerHeading">Stay Connected</h4>
+            <div class="footerSocialIcons">
+                <div class="footerIconText">
+                    <img src="{% static 'media/iconFacebook.png' %}" alt="Facebook" class="footerIcon">
+                    <span>StayEasyFB</span>
+                </div>
+         
+          
+                <div class="footerIconText">
+                    <img src="{% static 'media/iconInstagram.png' %}" alt="Instagram" class="footerIcon">
+                    <span>StayEasyInsta</span>
+                </div>
+           
+                
+                
+            </div>
+        </div>
+        
+    
+        <div class="footer-section">
+            <h4>Our Company</h4>
+            <p>StayEasy - "Your Home Away From Home"</p>
+            <p>&copy; {{ current_year }} StayEasy. All rights reserved.</p>
+        </div>
+    
+     
     </footer>
-
+    
+    
     <!-- Modal Definitions -->
     <dialog id="loginRequiredModal" class="modal">
         <div class="modal-content">
@@ -94,17 +141,30 @@
         </div>
     </dialog>
     
-    <dialog id="logoutConfirmModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Confirm Logout</h2>
-            <p>Are you sure you want to log out?</p>
-            <div class="modal-actions">
-                <button id="confirmLogoutBtn" class="btn btn-danger">Logout</button>
-                <button id="cancelLogoutBtn" class="btn btn-secondary">Cancel</button>
+    <!-- Become a Host Confirmation Modal -->
+    <dialog id="hostModal" class="cfmModal">
+        <div class="cfmModalContent">
+            <span class="closeCfmModal" title="Close Modal" onclick="closeHostModal()">&times;</span>
+            <h3 class="cfmModalTitle">Become a Host</h3>
+            <p class="cfmModalText">Are you sure you want to sign up as a host?</p>
+            <div class="cfmModalActions">
+                <a href="{% url 'accounts:signup' %}?role=host" class="cfmBtnConfirm">Yes, Proceed</a>
+                <button onclick="closeHostModal()" class="cfmBtnCancel">Cancel</button>
             </div>
         </div>
     </dialog>
+    <dialog id="logoutConfirmModal" class="cfmModal">
+        <div class="cfmModalContent">
+            <span class="closeCfmModal" title="Close Modal" onclick="closeLogoutModal()">&times;</span>
+            <h2 class="cfmModalTitle">Confirm Logout</h2>
+            <p class="cfmModalText">Are you sure you want to log out?</p>
+            <div class="cfmModalActions">
+                <button id="confirmLogoutBtn" class="cfmBtnConfirm">Logout</button>
+                <button id="cancelLogoutBtn" class="cfmBtnCancel">Cancel</button>
+            </div>
+        </div>
+    </dialog>
+    
     
     <dialog id="deleteWishlistModal" class="modal">
         <div class="modal-content">
@@ -142,43 +202,52 @@
         </div>
     </dialog>
 
+ 
     <!-- Wallet Modal -->
-    <dialog id="walletModal" class="modal">
-        <div class="wallet-modal-content">
-            <span class="close-modal">&times;</span>
-            <h1>My Wallet</h1>
-          
-            <h3>Balance:</h3>
-            <h2 id = "balance" >₱ {{ user.balance }}</h2>
+    <dialog id="walletModal" class="walletModal">
+        <div class="walletModalContent">
+            <span class="walletCloseButton" title="Close Modal" onclick="closeWalletModal()">&times;</span>
+            <h1 class="walletTitle">My Wallet</h1>
+    
+            <h3 class="walletBalanceTitle">Balance:</h3>
+            <h2 id="walletBalance" class="walletBalance">₱ {{ user.balance }}</h2>
+    
+            <!-- Notification -->
+            <p id="walletNotification" class="walletNotification" style="display: none;"></p>
     
             <!-- Deposit Form -->
-            <form id="depositForm" action="{% url 'accounts:deposit' %}" method="POST">
+            <form id="depositForm" action="{% url 'accounts:deposit' %}" method="POST" class="walletForm">
                 {% csrf_token %}
-                <input id="inputDeposit" type="number" name="amount" min="1" placeholder="Enter amount" required>
-                <button type="submit" class="btn btn-primary">Deposit</button>
+                <input id="inputDeposit" type="number" name="amount" min="1" placeholder="Enter amount" class="walletInput" required>
+                <button type="submit" class="walletDepositButton">Deposit</button>
             </form>
-            
-            
+    
+            <!-- Transactions -->
+            <a href="{% url 'bookings:my_bookings' %}?tab=completed" class="walletTransactionsLink">Transactions</a>
         </div>
     </dialog>
+    
+    
+
     
 
     <!-- Wishlist removal confimation -->
-    <dialog id="removeWishlistModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeRemoveWishlistModal()">&times;</span>
-            <h2>Remove from Wishlist</h2>
-            <p>Are you sure you want to remove <span id="propertyName"></span> from your wishlist?</p>
-            <div class="modal-actions">
+    <dialog id="removeWishlistModal" class="cfmModal">
+        <div class="cfmModalContent">
+            <span class="closeCfmModal" onclick="closeRemoveWishlistModal()">&times;</span>
+            <h2 class="cfmModalTitle">Remove from Wishlist</h2>
+            <p class="cfmModalText">Are you sure you want to remove <span id="propertyName"></span> from your wishlist?</p>
+            <div class="cfmModalActions">
                 <form id="removeWishlistForm" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="remove_from_wishlist" id="propertyId">
-                    <button type="submit" class="btn btn-danger">Remove</button>
+                    <button type="submit" class="cfmBtnConfirm">Remove</button>
                 </form>
-                <button class="btn btn-secondary" onclick="closeRemoveWishlistModal()">Cancel</button>
+                <button class="cfmBtnCancel" onclick="closeRemoveWishlistModal()">Cancel</button>
             </div>
         </div>
     </dialog>
+    
     
     
     
@@ -188,7 +257,13 @@
     </div>
 
     <script>
+        function openHostModal() {
+            document.getElementById('hostModal').showModal();
+        }
 
+        function closeHostModal() {
+            document.getElementById('hostModal').close();
+        }
         function showWalletModal() {
             const walletModal = document.getElementById('walletModal');
             if (walletModal) {
@@ -239,35 +314,79 @@
         });
 
 
-        // wallet thing
-        document.getElementById('depositForm')?.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent form submission from reloading the page
+        document.getElementById('depositForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
 
             const form = event.target;
             const formData = new FormData(form);
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
-                },
-            });
+            const notification = document.getElementById('walletNotification');
+            const inputField = document.getElementById('inputDeposit');
 
-            const data = await response.json();
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                    },
+                });
 
-            const alertBox = document.createElement('div');
-            alertBox.className = `alert ${data.status === 'success' ? 'alert-success' : 'alert-danger'}`;
-            alertBox.textContent = data.message;
-            document.getElementById('walletModal').appendChild(alertBox);
+                const data = await response.json();
 
-            // Keep the wallet modal open
-            if (data.status === 'success') {
-                document.querySelector('#walletModal h2').textContent = `₱ ${data.new_balance}`;
+                if (data.status === 'success') {
+                    document.getElementById('walletBalance').textContent = `₱ ${data.new_balance}`;
+                    notification.textContent = `${formData.get('amount')} has been deposited!`;
+                    notification.style.color = 'green';
+                } else {
+                    notification.textContent = data.message || 'An error occurred!';
+                    notification.style.color = 'red';
+                }
+
+                notification.style.display = 'block';
+
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
+
+                inputField.value = '';
+            } catch (error) {
+                notification.textContent = 'Failed to deposit. Please try again.';
+                notification.style.color = 'red';
+                notification.style.display = 'block';
+
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
             }
-
-            // Automatically remove the alert after 3 seconds
-            setTimeout(() => alertBox.remove(), 3000);
         });
+
+        function closeWalletModal() {
+            const walletModal = document.getElementById('walletModal');
+            walletModal.close();
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const params = new URLSearchParams(window.location.search);
+            const activeTab = params.get('tab');
+
+            if (activeTab) {
+                showTab(activeTab);
+            }
+        });
+
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-button');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+
+
 
     </script>
 </body>

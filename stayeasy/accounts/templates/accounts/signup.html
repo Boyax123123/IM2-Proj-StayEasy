@@ -7,18 +7,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StayEasy: Sign Up</title>
+  <title>StayEasy: {% if request.GET.role == "host" %}Host Sign Up{% else %}Sign Up{% endif %}</title>
 </head>
 <body>
 <link rel="stylesheet" href="{% static 'css/login.css' %}">
 
 <div class="conMain">
   <div class="logBox">
-    <h1 class="logtext">StayEasy Sign Up</h1>
+    <h1 class="logtext">
+      {% if request.GET.role == "host" %}
+        StayEasy Host Sign Up
+      {% else %}
+        StayEasy Sign Up
+      {% endif %}
+    </h1>
     <br>
     <form action="{% url 'accounts:signup' %}" method="post">
       {% csrf_token %}
       
+      <!-- Role Field (Hidden) -->
+      <input type="hidden" name="role" value="{{ request.GET.role|default:'' }}">
+
       <!-- Render Email field -->
       <div class="form-group">
         <label for="{{ form.email.id_for_label }}">Email:</label>
@@ -140,7 +149,13 @@
       <br>
 
       <!-- Submit button -->
-      <button type="submit" class="submitBtn">Sign Up</button>
+      <button type="submit" class="submitBtn">
+        {% if request.GET.role == "host" %}
+          Sign Up as Host
+        {% else %}
+          Sign Up
+        {% endif %}
+      </button>
     </form>
   
     <!-- Log in link -->

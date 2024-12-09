@@ -13,12 +13,30 @@
 
 <div class="conMid">
 
-    <!-- Sorting Buttons -->
+    <!-- Search Bar and Sorting Buttons -->
     <div class="topInfo">
         <div class="textMyWishlist">My Wishlists</div>
+        
         <div class="conBtnSort">
-            <form action="{% url 'properties:wishlists' %}" method="post" class="sortForm">
+            <form action="{% url 'properties:wishlists' %}" method="post" class="searchContainer">
                 {% csrf_token %}
+                
+                    <input 
+                        type="text" 
+                        name="searchQuery" 
+                        placeholder="Search" 
+                        class="search" 
+                        value="{{ search_query }}" 
+                        title="Search Properties"
+                    />
+                    <button type="submit" class="searchIcon" title="Search">
+                        <img src="{% static 'media/iconSearch.png' %}" alt="Search Icon" class="imgSearch">
+                    </button>
+
+                    {% if search_query %}
+                    <button type="button" class="clearSearch" onclick="clearSearch()" title="Clear Search">✖</button>
+                    {% endif %}
+            
                 <button type="submit" name="sortAlpha" class="btnSort" 
                     title="Sort Alphabetically" {% if sort_type == 'alpha' %} style="background-color: #ceedcc; border-bottom: 2px solid" {% endif %}>
                     Alphabetical
@@ -37,48 +55,55 @@
                 </button>
             </form>
         </div>
-        
     </div>
-    
-    
 
     <!-- Wishlist Property Cards -->
     <div class="container">
-        {% for property in properties %}
-        <div class="conCard">
-            <a href="{% url 'properties:property_details' property.id %}">
-                <div class="conImg" alt="{{ property.name }}" title="{{ property.name }}">
-                    {% if property.image %}
-                        <img src="{{ property.image.url }}" alt="{{ property.name }}" title="{{ property.name }}">
-                    {% else %}
-                        <p>No image available</p>
-                    {% endif %}
+        {% if properties %}
+            {% for property in properties %}
+            <div class="conCard">
+                <a href="{% url 'properties:property_details' property.id %}">
+                    <div class="conImg" alt="{{ property.name }}" title="{{ property.name }}">
+                        {% if property.image %}
+                            <img src="{{ property.image.url }}" alt="{{ property.name }}" title="{{ property.name }}">
+                        {% else %}
+                            <p>No image available</p>
+                        {% endif %}
+                    </div>
+                </a>
+                <div class="conPropertyDetails">
+                    <div class="details_top">
+                        <h2 class="textName">{{ property.name }}</h2>
+                        <button class="wish" 
+                                data-property-id="{{ property.id }}" 
+                                data-property-name="{{ property.name }}"
+                                onclick="showRemoveWishlistModal(this)">
+                            ❤️ 
+                        </button>
+                    </div>
+                    <h2 class="textPrice">₱ {{ property.price }}</h2>
+                    <h2 class="textRating">
+                        {% if property.rating == 0.0 %}
+                          ★ No rating yet
+                        {% else %}
+                          ★ {{ property.rating }}
+                        {% endif %}
+                      </h2>
                 </div>
-            </a>
-            <div class="conPropertyDetails">
-                <div class="details_top">
-                    <h2 class="textName">{{ property.name }}</h2>
-                    <!-- Trigger the Remove Wishlist Modal -->
-                    <button class="wish" 
-                            data-property-id="{{ property.id }}" 
-                            data-property-name="{{ property.name }}"
-                            onclick="showRemoveWishlistModal(this)">
-                        ❤️ 
-                    </button>
-                </div>
-                <h2 class="textPrice">₱ {{ property.price }}</h2>
-                <h2 class="textRating">
-                    {% if property.rating == 0.0 %}
-                      ★ No rating yet
-                    {% else %}
-                      ★ {{ property.rating }}
-                    {% endif %}
-                  </h2>
-                  
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="noResults">
+                <p>No results found</p>
+            </div>
+        {% endif %}
     </div>
-
 </div>
+
+<script>
+    function clearSearch() {
+        document.querySelector('.search').value = '';
+        document.querySelector('.sortForm').submit();
+    }
+</script>
 {% endblock %}

@@ -6,6 +6,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.views.decorators.csrf import csrf_exempt
 from .models import Accounts
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.core.exceptions import ValidationError
 # Create your views here.
 # @csrf_protect
 
@@ -106,10 +110,7 @@ def deposit(request):
             return JsonResponse({"status": "error", "message": "Please enter a valid number."})
     return JsonResponse({"status": "error", "message": "Invalid request method."})
 
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.core.exceptions import ValidationError
+
 
 @login_required
 def account_settings(request):
